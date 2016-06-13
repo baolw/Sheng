@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "D:\\space\\Sheng\\music40\\build\\intermediates\\res\\merged\\debug\\layout\\activity_serach.xml",
+        "source": "D:\\space\\Sheng\\music40\\src\\main\\res\\layout\\activity_serach.xml"
+    },
+    {
+        "merged": "D:\\space\\Sheng\\music40\\build\\intermediates\\res\\merged\\debug\\layout\\music_list.xml",
+        "source": "D:\\space\\Sheng\\music40\\src\\main\\res\\layout\\music_list.xml"
+    },
+    {
+        "merged": "D:\\space\\Sheng\\music40\\build\\intermediates\\res\\merged\\debug\\layout\\list_item.xml",
+        "source": "D:\\space\\Sheng\\music40\\src\\main\\res\\layout\\list_item.xml"
+    },
+    {
+        "merged": "D:\\space\\Sheng\\music40\\build\\intermediates\\res\\merged\\debug\\layout\\activity_serach_item.xml",
+        "source": "D:\\space\\Sheng\\music40\\src\\main\\res\\layout\\activity_serach_item.xml"
+    },
+    {
+        "merged": "D:\\space\\Sheng\\music40\\build\\intermediates\\res\\merged\\debug\\layout\\activity_main.xml",
+        "source": "D:\\space\\Sheng\\music40\\src\\main\\res\\layout\\activity_main.xml"
+    }
+]

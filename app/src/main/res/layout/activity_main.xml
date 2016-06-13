@@ -9,7 +9,7 @@
         android:id="@+id/rl_top"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="#0066ff">
+        android:background="#5CACEE">
 
 
 
@@ -82,18 +82,64 @@
     <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/rl_bottom"
+        android:layout_above="@+id/rl_bottom"
         android:layout_below="@+id/rl_top"></android.support.v4.view.ViewPager>
 
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/rl_bottom"
+        android:background="#D3D3D3"></View>
     <RelativeLayout
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="#DCDCDC"
+        android:background="#E3E3E3"
         android:layout_alignParentBottom="true">
 
 
+        <tedu.sheng.ui.CircleImageView
+            android:id="@+id/civ_photo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:layout_alignParentLeft="true"/>
+
+        <TextView
+            android:id="@+id/tv_song"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="歌名"
+            android:textSize="12sp"
+            android:layout_toRightOf="@+id/civ_photo"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="8dp"
+
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="作者"
+            android:textSize="12sp"
+            android:layout_toRightOf="@+id/civ_photo"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="8dp"
+            android:layout_below="@+id/tv_song"
+            />
+
+        <ImageView
+            android:id="@+id/iv_playorpause"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/play"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="40dp"
+            />
 
     </RelativeLayout>
 
