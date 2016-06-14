@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tedu.sheng.MainActivity">
+    tools:context=".ui.MainActivity">
 
     <RelativeLayout
         android:id="@+id/rl_top"
@@ -23,6 +23,7 @@
             android:layout_alignParentLeft="true"/>
 
         <RadioGroup
+            android:id="@+id/rg_sup"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
@@ -33,6 +34,7 @@
             >
 
             <RadioButton
+                android:id="@+id/rb_sup_bank"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -41,8 +43,9 @@
                 android:gravity="center"
                 android:textSize="16sp"
                android:button="@null"
-                />
+                android:checked="false" />
             <RadioButton
+                android:id="@+id/rb_sup_news"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -53,6 +56,7 @@
                 android:button="@null"
                 />
             <RadioButton
+                android:id="@+id/rb_sup_mine"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -80,6 +84,7 @@
 
 
     <android.support.v4.view.ViewPager
+        android:id="@+id/vp_nav"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/rl_bottom"
@@ -88,14 +93,13 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:layout_above="@+id/rl_bottom"
         android:background="#D3D3D3"></View>
     <RelativeLayout
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="#E3E3E3"
         android:layout_alignParentBottom="true">
 
 
@@ -121,12 +125,13 @@
             />
 
         <TextView
+            android:id="@+id/tv_singer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="作者"
             android:textSize="12sp"
             android:layout_toRightOf="@+id/civ_photo"
-            android:layout_marginTop="6dp"
+            android:layout_marginBottom="4dp"
             android:layout_marginLeft="8dp"
             android:layout_below="@+id/tv_song"
             />

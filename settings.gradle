@@ -1,2 +1,1 @@
-include ':app'
-include ':music40'
+include ':app', ':sample', ':lib'
