@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:padding="4dp"
+        >
+
+
+        <TextView
+            android:id="@+id/tv_item_num"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+
+            android:gravity="center"
+            android:text="1"
+            android:textSize="18sp" />
+
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_toLeftOf="@+id/iv_item_down"
+            android:layout_toRightOf="@+id/tv_item_num"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/tv_item_song"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_toRightOf="@+id/civ_photo"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="歌名"
+                android:maxLines="1"
+                android:textColor="#111111"
+                android:textSize="16sp"
+
+                />
+
+            <TextView
+                android:id="@+id/tv_item_singer"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_below="@+id/tv_song"
+                android:layout_toRightOf="@+id/civ_photo"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="作者"
+                android:textColor="@color/gray_light"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_item_down"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/down"
+            android:scaleType="centerInside"
+            />
+    </RelativeLayout>
+
+
+</RelativeLayout>

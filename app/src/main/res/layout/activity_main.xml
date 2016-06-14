@@ -39,18 +39,18 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="乐库"
-                android:textColor="#ffffff"
+                android:textColor="@drawable/color_selector"
                 android:gravity="center"
-                android:textSize="16sp"
+                android:textSize="18sp"
                android:button="@null"
-                android:checked="false" />
+                android:checked="true" />
             <RadioButton
                 android:id="@+id/rb_sup_news"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="动态"
-                android:textColor="#ffffff"
+                android:textColor="@drawable/color_selector"
                 android:gravity="center"
                 android:textSize="16sp"
                 android:button="@null"
@@ -61,7 +61,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="我的"
-                android:textColor="#ffffff"
+                android:textColor="@drawable/color_selector"
                 android:gravity="center"
                 android:textSize="16sp"
                 android:button="@null"
@@ -100,7 +100,8 @@
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:padding="4dp">
 
 
         <tedu.sheng.ui.CircleImageView
@@ -109,32 +110,43 @@
             android:layout_height="40dp"
             android:src="@mipmap/ic_launcher"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="12dp"
             android:layout_alignParentLeft="true"/>
 
-        <TextView
-            android:id="@+id/tv_song"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="歌名"
-            android:textSize="12sp"
-            android:layout_toRightOf="@+id/civ_photo"
-            android:layout_marginTop="6dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/iv_playorpause"
+            android:orientation="vertical"
             android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_toRightOf="@+id/civ_photo">
 
-            />
 
-        <TextView
-            android:id="@+id/tv_singer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="作者"
-            android:textSize="12sp"
-            android:layout_toRightOf="@+id/civ_photo"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="8dp"
-            android:layout_below="@+id/tv_song"
-            />
+            <TextView
+                android:id="@+id/tv_song"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="歌名"
+                android:textColor="#111111"
+                android:textSize="12sp"
+                android:layout_toRightOf="@+id/civ_photo"
+
+                />
+
+            <TextView
+                android:id="@+id/tv_singer"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="作者"
+                android:textSize="12sp"
+                android:layout_toRightOf="@+id/civ_photo"
+                android:layout_below="@+id/tv_song"
+                />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/iv_playorpause"
@@ -143,7 +155,6 @@
             android:layout_alignParentRight="true"
             android:src="@mipmap/play"
             android:layout_centerVertical="true"
-            android:layout_marginRight="40dp"
             />
 
     </RelativeLayout>

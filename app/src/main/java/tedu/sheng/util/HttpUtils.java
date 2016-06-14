@@ -17,23 +17,18 @@ public class HttpUtils {
 	
 
 	public static String getStr(InputStream is){
-		StringBuffer buffer=new StringBuffer();
 
-		InputStreamReader  isr=new InputStreamReader(is);
-		
-		BufferedReader br=new BufferedReader(isr);
+		StringBuffer buffer=new StringBuffer();
+		BufferedReader br=new BufferedReader(new InputStreamReader(is));
+		String line=null;
 		try {
-			String line=br.readLine();
-			while (line!=null) {
-				buffer.append(line);
-				line=br.readLine();
-			}
-			
+			while((line=br.readLine())!=null){
+                buffer.append(line);
+            }
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return buffer.toString();
-
 	}
 
 	public static InputStream  getIs(String path){

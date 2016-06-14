@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -45,7 +46,7 @@ public class MainActivity extends FragmentActivity {
     private RadioButton rbSupNews;
     private RadioButton rbSupMine;
 
-    private List<Song> songs=new ArrayList<Song>();
+    private List<Song> songs=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,14 @@ public class MainActivity extends FragmentActivity {
             public void onPageSelected(int position) {
                 switch (position){
                     case 0:
-
+                        rbSupBank.setChecked(true);
+                        break;
+                    case 1:
+                        rbSupNews.setChecked(true);
+                        break;
+                    case 2:
+                        rbSupMine.setChecked(true);
+                        break;
                 }
             }
 
@@ -90,19 +98,51 @@ public class MainActivity extends FragmentActivity {
 
             }
         });
+        rgSup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId){
+                    case R.id.rb_sup_bank:
+                        vpNav.setCurrentItem(0);
+                        rbSupBank.setTextSize(18);
+                        rbSupNews.setTextSize(16);
+                        rbSupMine.setTextSize(16);
+                        break;
+                     case R.id.rb_sup_news:
+                        vpNav.setCurrentItem(1);
+                        rbSupNews.setTextSize(18);
+                         rbSupBank.setTextSize(16);
+                         rbSupMine.setTextSize(16);
+                         break;
+                     case R.id.rb_sup_mine:
+                        vpNav.setCurrentItem(2);
+                        rbSupMine.setTextSize(18);
+                         rbSupBank.setTextSize(16);
+                         rbSupNews.setTextSize(16);
+                         break;
+                }
+            }
+        });
+
 
     }
 
     private void setFragment() {
-        fragments=new ArrayList<Fragment>();
+
+        fragments=new ArrayList<>();
+
         bankFragment=new BankFragment();
         fragments.add(bankFragment);
+
         newsFragment=new NewsFragment();
         fragments.add(newsFragment);
+
         mineFragment=new MineFragment();
         fragments.add(mineFragment);
+
         myFragmentPagerAdapter=new MyFragmentPagerAdapter(fragments,getSupportFragmentManager());
         vpNav.setAdapter(myFragmentPagerAdapter);
+        vpNav.setOffscreenPageLimit(3);
     }
 
     private void init() {
