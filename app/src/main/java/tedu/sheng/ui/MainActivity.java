@@ -1,19 +1,14 @@
 package tedu.sheng.ui;
 
 
-
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -126,19 +121,9 @@ public class MainActivity extends FragmentActivity implements Consts{
 
                 if(rotateAnimation==null) {
 
-                    String path="";
-                    if("".equals(currentSong.getInfo().getAlbum_500_500())){
-                        path=currentSong.getInfo().getAlbum_500_500();
-                    }else if ("".equals(currentSong.getInfo().getAlbum_1000_1000())){
-                        path=currentSong.getInfo().getAlbum_1000_1000();
-                    }else if("".equals(currentSong.getInfo().getArtist_480_800())){
-                        path=currentSong.getInfo().getArtist_480_800();
-                    }else if("".equals(currentSong.getInfo().getArtist_640_1136())){
-                        path=currentSong.getInfo().getArtist_480_800();
-                    }else if("".equals(currentSong.getInfo().getArtist_1000_1000())){
-                        path=currentSong.getInfo().getArtist_480_800();
-                    }
-                    model.displaySingle(path, civPhoto,60,60);
+
+
+                    model.displaySingle(currentSong.getInfo().getAlbum_500_500(), civPhoto,60,60);
                     rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF,0.5f, Animation.RELATIVE_TO_SELF,0.5f);
                     rotateAnimation.setDuration(10000);
                     rotateAnimation.setRepeatCount(Animation.INFINITE);
@@ -237,6 +222,14 @@ public class MainActivity extends FragmentActivity implements Consts{
             }
         });
 
+        ivSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,SearchActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void setFragment() {
@@ -289,7 +282,15 @@ public class MainActivity extends FragmentActivity implements Consts{
             startActivity(in);
         }
 
+    @Override
+    protected void onDestroy() {
 
 
+        if(musicReceiver!=null){
+            unregisterReceiver(musicReceiver);
+            musicReceiver=null;
+        }
+        super.onDestroy();
 
+    }
 }

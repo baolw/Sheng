@@ -1,23 +1,18 @@
 package tedu.sheng.service;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
-
-
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
-import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
 
 import tedu.sheng.app.MyApplication;
 import tedu.sheng.entity.Song;
@@ -62,7 +57,7 @@ public class MusicService extends Service implements Consts {
         app = (MyApplication) getApplication();
         netSongs = app.getNetSongs();
 
-        model=new MusicModel();
+        model=new MusicModel(getApplication());
 
 
 
@@ -170,9 +165,10 @@ public class MusicService extends Service implements Consts {
     }
 
     private void play() {
+
         try {
             player.reset();
-            player.setDataSource(currentSong.getUrls().get(0).getShow_link());
+            player.setDataSource(currentSong.getUrls().get(1).getShow_link());
             player.prepare();
             player.seekTo(pausePosition);
             player.start();
@@ -188,6 +184,14 @@ public class MusicService extends Service implements Consts {
 
         broadcasetIntent.setAction(ACTION_SET_AS_PLAY_STATE2);
         sendBroadcast(broadcasetIntent);
+
+        new Thread(){
+            @Override
+            public void run() {
+                app.setSongLrcs(model.getLrc(currentSong.getLrclink()));
+            }
+        }.start();
+
 
         app.setIsRunning(true);
         startUpdateProgressThread();
@@ -260,10 +264,15 @@ public class MusicService extends Service implements Consts {
 
     @Override
     public void onDestroy() {
-        player.reset();
-        player.release();
-        looper = false;
-        stopThread();
+        if(receiver!=null){
+            unregisterReceiver(receiver);
+            receiver=null;
+        }
+        stopUpdateProgressThread();
+        if(player!=null){
+            player.release();
+            player=null;
+        }
     }
 
     @Nullable
@@ -272,9 +281,7 @@ public class MusicService extends Service implements Consts {
         return null;
     }
 
-    public void stopThread() {
-        update = null;
-    }
+
 
 
 }

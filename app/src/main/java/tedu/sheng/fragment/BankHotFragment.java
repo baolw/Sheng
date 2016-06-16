@@ -24,6 +24,7 @@ import tedu.sheng.adapter.MusicAdapter;
 import tedu.sheng.app.MyApplication;
 import tedu.sheng.entity.Song;
 import tedu.sheng.model.MusicModel;
+import tedu.sheng.url.HostURL;
 import tedu.sheng.util.Consts;
 
 /**
@@ -121,7 +122,8 @@ public class BankHotFragment extends Fragment implements Consts{
                             new Thread(){
                                 @Override
                                 public void run() {
-                                    newSongs=model.getSongs(songs.size(),20);
+                                    String path = HostURL.getHot(songs.size(), 20);
+                                    newSongs=model.getSongs(path);
                                     if(newSongs.size()<1){
                                         haveDate=false;
                                     }
@@ -156,7 +158,8 @@ public class BankHotFragment extends Fragment implements Consts{
         new Thread(new Runnable() {
             @Override
             public void run() {
-                songs=model.getSongs(0,20);
+                String path = HostURL.getHot(0, 20);
+                songs=model.getSongs(path);
                 handler.sendEmptyMessage(0);
                 app.setNetSongs(songs);
             }

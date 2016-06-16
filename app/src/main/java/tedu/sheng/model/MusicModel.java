@@ -28,11 +28,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import tedu.sheng.R;
 import tedu.sheng.entity.Song;
 import tedu.sheng.entity.SongInfo;
 import tedu.sheng.entity.SongLrc;
-import tedu.sheng.entity.SongSerch;
+import tedu.sheng.entity.SongSearch;
 import tedu.sheng.entity.SongUrl;
 import tedu.sheng.url.HostURL;
 import tedu.sheng.util.BitmapLruCache;
@@ -60,9 +59,9 @@ public class MusicModel {
     }
 
 
-    public List<Song> getSongs(int offset, int size) {
+    public List<Song> getSongs(String path) {
         List<Song> songs = new ArrayList<Song>();
-        String path = HostURL.getHot(offset, size);
+
         InputStream is = HttpUtils.getIs(path);
         String str = HttpUtils.getStr(is);
         try {
@@ -125,10 +124,8 @@ public class MusicModel {
     }
 
 
-    public void displayImg(ImageView img, final String url) {
 
-        //loader.get(url, ImageLoader.getImageListener(img, R.drawable.icon_task_browser, R.drawable.icon_shake_fail));
-    }
+
 
 
     public void displaySingle(String url, final ImageView img,final int width,final int height) {
@@ -180,10 +177,8 @@ public class MusicModel {
         try {
             if (is == null || is.available() < 1) {
                 is = HttpUtils.getIs(url);
-                System.out.println("֤���������");
             }
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
 
@@ -207,6 +202,7 @@ public class MusicModel {
                 lrc.setData(line);
                 lrc.setContent(content);
                 lrc.setTime(time);
+
                 lrcLines.add(lrc);
 
 
@@ -227,8 +223,7 @@ public class MusicModel {
 
     public void saveLrc(String url, List<SongLrc> lrcLines) {
 
-        // http://musicdata.baidu.com/data2/lrc/1aec249cd8134a79a853f801a3d07b6e/265391690/265391690.lrc
-        // String path=s.getLrclink();
+
         String name = url.substring(url.lastIndexOf("/") + 1);
         File f = new File(context.getCacheDir(), name);
         if (!f.getParentFile().exists()) {
@@ -259,11 +254,11 @@ public class MusicModel {
 
         String name = url.substring(url.lastIndexOf("/") + 1);
         File f = new File(context.getCacheDir(), name);
+
         if (f.exists()) {
             try {
                 fis = new FileInputStream(f);
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
@@ -273,8 +268,8 @@ public class MusicModel {
     }
 
 
-    public List<SongSerch> Sreach(String name) {
-        List<SongSerch> data = new ArrayList<SongSerch>();
+    public List<SongSearch> search(String name) {
+        List<SongSearch> data = new ArrayList<SongSearch>();
         String path = HostURL.getSerach(name);
         InputStream is = HttpUtils.getIs(path);
         String str = HttpUtils.getStr(is);
@@ -287,7 +282,7 @@ public class MusicModel {
                 String title = (serach.isNull("title") ? "" : serach.getString("title"));
                 String author = (serach.isNull("author") ? "" : serach.getString("author"));
                 String song_id = (serach.isNull("song_id") ? "" : serach.getString("song_id"));
-                SongSerch song_srach = new SongSerch(title, song_id, author);
+                SongSearch song_srach = new SongSearch(title, song_id, author);
                 data.add(song_srach);
             }
 

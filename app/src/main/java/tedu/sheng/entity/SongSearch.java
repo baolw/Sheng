@@ -1,17 +1,22 @@
 package tedu.sheng.entity;
 
 
-public class SongSerch {
+import java.util.List;
+
+public class SongSearch {
 	private String title;
 	private String song_id;
 	private String author;
-	public SongSerch(String title,String song_id,String author){
+
+
+	public SongSearch(String title, String song_id, String author){
 		this.title=title;
 		this.song_id=song_id;
 		this.song_id=author;
 		
 	}
-	
+
+
 	public String getTitle() {
 		return title;
 	}
@@ -32,7 +37,8 @@ public class SongSerch {
 	public void setAuthor(String author) {
 		this.author = author;
 	}
-	
-	
+	private List<SongUrl> urls;
+
+
 
 }

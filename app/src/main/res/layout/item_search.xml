@@ -12,7 +12,7 @@
 
 
         <TextView
-            android:id="@+id/tv_item_num"
+            android:id="@+id/tv_item_search_num"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
@@ -28,13 +28,13 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:layout_toLeftOf="@+id/iv_item_down"
-            android:layout_toRightOf="@+id/tv_item_num"
+            android:layout_toLeftOf="@+id/iv_item_search_down"
+            android:layout_toRightOf="@+id/tv_item_search_num"
             android:orientation="vertical">
 
 
             <TextView
-                android:id="@+id/tv_item_song"
+                android:id="@+id/tv_item_search_song"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_toRightOf="@+id/civ_photo"
@@ -48,11 +48,9 @@
                 />
 
             <TextView
-                android:id="@+id/tv_item_singer"
+                android:id="@+id/tv_item_search_singer"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_below="@+id/tv_song"
-                android:layout_toRightOf="@+id/civ_photo"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:maxLines="1"
@@ -62,7 +60,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/iv_item_down"
+            android:id="@+id/iv_item_search_down"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"

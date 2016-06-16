@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="tedu.sheng">
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".app.MyApplication"
@@ -18,11 +18,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.PlayActivity"
+            android:launchMode="singleTask" />
 
-        <activity android:name=".ui.PlayActivity"
+        <service android:name=".service.MusicService" />
 
-            android:launchMode="singleTask"></activity>
-        <service android:name=".service.MusicService"></service>
+        <service android:name=".service.MusicDownLoadService"></service>
+        <activity android:name=".ui.RegistActivity" />
+        <activity android:name=".ui.SearchActivity"/>
     </application>
 
 </manifest>

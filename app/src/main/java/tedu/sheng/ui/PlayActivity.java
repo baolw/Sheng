@@ -29,10 +29,12 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import tedu.sheng.R;
 import tedu.sheng.app.MyApplication;
 import tedu.sheng.entity.Song;
+import tedu.sheng.entity.SongLrc;
 import tedu.sheng.model.MusicModel;
 import tedu.sheng.util.BitmapUtils;
 import tedu.sheng.util.CommonUtils;
@@ -68,14 +70,16 @@ public class PlayActivity extends Activity implements Consts {
 
     private boolean isTrackingTouch;
 
+    private List<SongLrc> songLrcs;
+
     InnerReceiver receiver;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0:
-
-civPlayPhoto.clearAnimation();
+                    tvPlayLrc.setText("");
+                    civPlayPhoto.clearAnimation();
                     app.setCurrentSong(currentSong);
                     broadIntent.setAction(ACTION_NEXT);
                     broadIntent.putExtra(EXTRA_CURRENT_MUSIC, currentSong);
@@ -83,6 +87,7 @@ civPlayPhoto.clearAnimation();
 
                     break;
                 case 1:
+                    tvPlayLrc.setText("");
                     civPlayPhoto.clearAnimation();
                     app.setCurrentSong(currentSong);
                     broadIntent.setAction(ACTION_PREVIOUS);
@@ -124,21 +129,11 @@ civPlayPhoto.clearAnimation();
             tvPlaySong.setText(currentSong.getTitle());
             tvPlaySinger.setText(currentSong.getArtist_name());
 
-            String path="";
-            if("".equals(currentSong.getInfo().getAlbum_500_500())){
-                path=currentSong.getInfo().getAlbum_500_500();
-            }else if ("".equals(currentSong.getInfo().getAlbum_1000_1000())){
-                path=currentSong.getInfo().getAlbum_1000_1000();
-            }else if("".equals(currentSong.getInfo().getArtist_480_800())){
-                path=currentSong.getInfo().getArtist_480_800();
-            }else if("".equals(currentSong.getInfo().getArtist_640_1136())){
-                path=currentSong.getInfo().getArtist_480_800();
-            }else if("".equals(currentSong.getInfo().getArtist_1000_1000())){
-                path=currentSong.getInfo().getArtist_480_800();
-            }
-            model.displaySingle(path, civPlayPhoto, 260, 260);
 
-            model.displayblur(path, ivPlayBack);
+
+            model.displaySingle(currentSong.getInfo().getAlbum_500_500(), civPlayPhoto, 260, 260);
+
+            model.displayblur(currentSong.getInfo().getAlbum_500_500(), ivPlayBack);
 
             if (app.getIsRunning()) {
                 ivPlayPlay.setImageResource(R.mipmap.pause);
@@ -177,6 +172,12 @@ civPlayPhoto.clearAnimation();
 
             } else if (ACTION_SET_AS_PLAY_STATE2.equals(action)) {
                 setViews();
+                new Thread(){
+                    @Override
+                    public void run() {
+                        //songLrcs=model.getLrc(currentSong.getLrclink());
+                    }
+                }.start();
 
 
             }else if(ACTION_UPDATE_PROGRESS.equals(action)){
@@ -186,8 +187,20 @@ civPlayPhoto.clearAnimation();
                 if(!isTrackingTouch){
                     sbPlayProgress.setProgress(currentPosition);
                 }
-                tvPlayProgress.setText(CommonUtils.getFormattedTime(currentPosition));
-                tvPlayTotal.setText(CommonUtils.getFormattedTime(duration));
+                String progressTime=CommonUtils.getFormattedTime(currentPosition);
+                String totalTime=CommonUtils.getFormattedTime(duration);
+                tvPlayProgress.setText(progressTime);
+                tvPlayTotal.setText(totalTime);
+
+                songLrcs=app.getSongLrcs();
+                for(int i=0;i<songLrcs.size();i++){
+                    SongLrc lrc=songLrcs.get(i);
+                    String time=lrc.getTime();
+                    String content=lrc.getContent();
+                    if(time.equals(progressTime)){
+                        tvPlayLrc.setText(content);
+                    }
+                }
 
             }
         }
@@ -208,6 +221,7 @@ civPlayPhoto.clearAnimation();
         ivPlayNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 
                 new Thread() {
                     @Override

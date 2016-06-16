@@ -13,7 +13,7 @@ public class HostURL {
 	}
 	//新歌路径
 	public static String  getNew(int offset,int size){
-		String path="http://tingapi.ting.baidu.com/v1/restserver/ting?from=qianqian&version=2.1.0&method=baidu.ting.billboard.billList&format=json&type=1&offset="+offset+"&size="+size;
+		String path="http://tingapi.ting.baidu.com/v1/restserver/ting?from=qianqian&version=2.1.0&method=baidu.ting.billboard.billList&format=json&type=2&offset="+offset+"&size="+size;
 		return path;
 	}
 	//英文路径
