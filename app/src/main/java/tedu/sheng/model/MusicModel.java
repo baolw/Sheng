@@ -131,7 +131,7 @@ public class MusicModel {
 
 
 	public void displaySingle(String url, final ImageView img) {
-		ImageRequest imr = new ImageRequest(url, new Response.Listener<Bitmap>() {
+		ImageRequest imageRequest= new ImageRequest(url, new Response.Listener<Bitmap>() {
 
 			@Override
 			public void onResponse(Bitmap arg0) {
@@ -146,7 +146,7 @@ public class MusicModel {
 
 			}
 		});
-		mQu.add(imr);
+		mQu.add(imageRequest);
 
 	}
 

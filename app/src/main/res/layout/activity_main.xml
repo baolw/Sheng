@@ -99,7 +99,7 @@
     <RelativeLayout
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="54dp"
         android:layout_alignParentBottom="true"
         android:padding="4dp">
 
@@ -108,6 +108,7 @@
             android:id="@+id/civ_photo"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginLeft="4dp"
             android:src="@mipmap/ic_launcher"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"/>
@@ -155,6 +156,9 @@
             android:layout_alignParentRight="true"
             android:src="@mipmap/play"
             android:layout_centerVertical="true"
+            android:scaleType="centerInside"
+            android:padding="2dp"
+            android:layout_marginRight="2dp"
             />
 
     </RelativeLayout>

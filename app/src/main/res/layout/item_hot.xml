@@ -6,7 +6,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="54dp"
         android:padding="4dp"
         >
 
@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-
+            android:layout_marginLeft="4dp"
             android:gravity="center"
             android:text="1"
             android:textSize="18sp" />
@@ -69,6 +69,7 @@
             android:layout_centerVertical="true"
             android:src="@mipmap/down"
             android:scaleType="centerInside"
+            android:padding="10dp"
             />
     </RelativeLayout>
 

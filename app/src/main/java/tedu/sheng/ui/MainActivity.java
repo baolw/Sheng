@@ -2,11 +2,22 @@ package tedu.sheng.ui;
 
 
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -17,12 +28,16 @@ import java.util.List;
 
 import tedu.sheng.R;
 import tedu.sheng.adapter.MyFragmentPagerAdapter;
+import tedu.sheng.app.MyApplication;
 import tedu.sheng.entity.Song;
 import tedu.sheng.fragment.BankFragment;
 import tedu.sheng.fragment.MineFragment;
 import tedu.sheng.fragment.NewsFragment;
+import tedu.sheng.model.MusicModel;
+import tedu.sheng.service.MusicService;
+import tedu.sheng.util.Consts;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements Consts{
 
     //管理父ViewPager
     private List<Fragment> fragments;
@@ -48,6 +63,14 @@ public class MainActivity extends FragmentActivity {
 
     private List<Song> songs=new ArrayList<>();
 
+    private MyApplication app;
+    private BroadcastReceiver musicReceiver;
+    private Song currentSong;
+    private MusicModel model;
+    private Intent broadIntent=new Intent();
+
+    private boolean isRunning=false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,12 +87,63 @@ public class MainActivity extends FragmentActivity {
             window.setNavigationBarColor(Color.TRANSPARENT);
         }*/
         setContentView(R.layout.activity_main);
+        app= (MyApplication) getApplication();
+
+        model=new MusicModel(this);
+        //开启服务
+        Intent intent=new Intent(MainActivity.this,MusicService.class);
+        startService(intent);
+        //注册广播
+        registBroadcast();
         init();
         setFragment();
         setListener();
 
-
     }
+
+    private void registBroadcast() {
+        musicReceiver=new musicReceiver();
+        IntentFilter filter=new IntentFilter();
+        filter.addAction(ACTION_SET_AS_PLAY_STATE);
+        filter.addAction(ACTION_SET_AS_PAUSE_STATE);
+        filter.addAction(ACTION_UPDATE_PROGRESS);
+        registerReceiver(musicReceiver,filter);
+    }
+
+    class musicReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            RotateAnimation  rotateAnimation=null;
+            String action=intent.getAction();
+
+            if(ACTION_SET_AS_PLAY_STATE.equals(action)){
+
+                isRunning=true;
+                currentSong=app.getCurrentSong();
+                ivPlayOrPause.setImageResource(R.mipmap.pause);
+                tvSong.setText(currentSong.getTitle());
+                tvSinger.setText(currentSong.getArtist_name());
+
+                if(rotateAnimation==null) {
+                    model.displaySingle(currentSong.getInfo().getAlbum_500_500(), civPhoto);
+                    rotateAnimation = new RotateAnimation(0, 360, civPhoto.getWidth() / 2, civPhoto.getHeight() / 2);
+                    rotateAnimation.setDuration(2000);
+                    rotateAnimation.setRepeatCount(Animation.INFINITE);
+                    rotateAnimation.setInterpolator(new LinearInterpolator());
+                    civPhoto.setAnimation(rotateAnimation);
+                }else{
+                    civPhoto.setAnimation(rotateAnimation);
+                }
+
+            }else if(ACTION_SET_AS_PAUSE_STATE.equals(action)){
+                isRunning=false;
+                civPhoto.clearAnimation();
+                ivPlayOrPause.setImageResource(R.mipmap.play);
+            }
+        }
+    }
+
 
     private void setListener() {
         vpNav.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -124,6 +198,27 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
+        ivPlayOrPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentSong!=null){
+                    if(currentSong!=null) {
+                        broadIntent.setAction(ACTION_PLAY_OR_PAUSE);
+                        sendBroadcast(broadIntent);
+                    }
+                }
+            }
+        });
+
+        civPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent playIntent=new Intent(MainActivity.this,PlayActivity.class);
+                playIntent.putExtra(EXTRA_CURRENT_MUSIC,currentSong);
+
+                startActivity(playIntent);
+            }
+        });
 
     }
 
@@ -145,6 +240,7 @@ public class MainActivity extends FragmentActivity {
         vpNav.setOffscreenPageLimit(3);
     }
 
+
     private void init() {
         ivMenu= (ImageView) findViewById(R.id.iv_menu);
         ivSearch= (ImageView) findViewById(R.id.iv_search);
@@ -158,6 +254,7 @@ public class MainActivity extends FragmentActivity {
         rbSupNews= (RadioButton) findViewById(R.id.rb_sup_news);
         rbSupMine= (RadioButton) findViewById(R.id.rb_sup_mine);
     }
+
 
 
 }
