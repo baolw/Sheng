@@ -1,6 +1,7 @@
 package tedu.sheng.app;
 
 import android.app.Application;
+import android.util.Log;
 
 import java.util.List;
 
@@ -15,6 +16,9 @@ public class MyApplication extends Application{
     private List<Song> localSongs;
     //当前播放的歌曲
     private Song currentSong;
+//是否在播放
+    private boolean isRunning;
+
 
     private int position;
     @Override
@@ -22,6 +26,16 @@ public class MyApplication extends Application{
         super.onCreate();
         //setLocalSongs();
 
+    }
+
+
+
+    public boolean getIsRunning() {
+        return isRunning;
+    }
+
+    public void setIsRunning(boolean running) {
+        isRunning = running;
     }
 
     public int getPosition() {
@@ -54,6 +68,7 @@ public class MyApplication extends Application{
         this.currentSong=currentSong;
     }
     public Song getCurrentSong(){
+        Log.e("app里","get");
         return currentSong;
     }
 }

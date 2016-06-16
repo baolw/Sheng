@@ -70,18 +70,14 @@ public class MusicService extends Service implements Consts {
         player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                currenMusicIndex++;
+                if(currenMusicIndex>app.getNetSongs().size()){
+                    currenMusicIndex=0;
+                }
+                currentSong=model.getSongInfo(app.getNetSongs().get(currenMusicIndex));
                 next();
             }
-
-
         });
-
-
-
-
-        //looper = true;
-        update = new UpdateProgressThread();
-        update.start();
 
         receiver = new InnerReceiver();
         IntentFilter filter = new IntentFilter();
@@ -115,17 +111,18 @@ public class MusicService extends Service implements Consts {
                 }
             } else if (ACTION_NEXT.equals(action)) {
 
+                currentSong= (Song) intent.getSerializableExtra(EXTRA_CURRENT_MUSIC);
                  next();
             } else if (ACTION_PREVIOUS.equals(action)) {
-                // previous();
+                currentSong= (Song) intent.getSerializableExtra(EXTRA_CURRENT_MUSIC);
+                previous();
             } else if (ACTION_PLAY_POSITION.equals(action)) {
                 int position = intent.getIntExtra(EXTRA_MUSIC_INDEX, 0);
                 currentSong = (Song) intent.getSerializableExtra(EXTRA_CURRENT_MUSIC);
-                currenMusicIndex=intent.getIntExtra(EXTRA_MUSIC_INDEX,0);
                 play(position);
             } else if (ACTION_PLAY_FROM_PROGRESS.equals(action)) {
                 int progress = intent.getIntExtra(EXTRA_PROGRESS, 0);
-                //playFromProgress(progress);
+                playFromProgress(progress);
             } else if (ACTION_PLAY_POSITION_NET.equals(action)) {
                 int position = intent.getIntExtra(EXTRA_MUSIC_INDEX, 0);
                 currentSong = (Song) intent.getSerializableExtra(EXTRA_CURRENT_MUSIC);
@@ -137,11 +134,24 @@ public class MusicService extends Service implements Consts {
 
 
     }
+    private void playFromProgress(int progress) {
+        pausePosition=progress;
+        play();
+    }
+
+
 
     //下一首
     private void next() {
+
         pausePosition=0;
         play();
+
+
+    }private void previous() {
+        pausePosition=0;
+        play();
+
     }
 
 
@@ -149,10 +159,14 @@ public class MusicService extends Service implements Consts {
     private void pause() {
         player.pause();
         pausePosition=player.getCurrentPosition();
-Log.e("错误检查","pause");
         broadcasetIntent.setAction(ACTION_SET_AS_PAUSE_STATE);
         sendBroadcast(broadcasetIntent);
-        startUpdateProgressThread();
+        stopUpdateProgressThread();
+
+        broadcasetIntent.setAction(ACTION_SET_AS_PAUSE_STATE2);
+        sendBroadcast(broadcasetIntent);
+
+        app.setIsRunning(false);
     }
 
     private void play() {
@@ -170,11 +184,13 @@ Log.e("错误检查","pause");
 
         //将播放歌曲信息同步到activity界面中
         broadcasetIntent.setAction(ACTION_SET_AS_PLAY_STATE);
-        broadcasetIntent.putExtra(EXTRA_MUSIC_INDEX, index);
         sendBroadcast(broadcasetIntent);
 
-        startUpdateProgressThread();
+        broadcasetIntent.setAction(ACTION_SET_AS_PLAY_STATE2);
+        sendBroadcast(broadcasetIntent);
 
+        app.setIsRunning(true);
+        startUpdateProgressThread();
 
 
 
@@ -210,8 +226,8 @@ Log.e("错误检查","pause");
     //结束线程
     public void stopUpdateProgressThread(){
         if(update!=null){
-            update=null;
             update.setIsRunning(false);
+            update=null;
         }
     }
 
@@ -224,26 +240,21 @@ Log.e("错误检查","pause");
         public void run() {
             super.run();
 
-            while (looper) {
-                try {
-                    sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (player.isPlaying()) {
+            while (isRunning) {
 
-                    int dura = player.getDuration();
-
-                    int current = player.getCurrentPosition();
-
-                    Intent in = new Intent("update");
-                    in.putExtra("duration", dura);
-                    in.putExtra("current", current);
-                    sendBroadcast(in);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (player.isPlaying()) {
+                        broadcasetIntent.setAction(ACTION_UPDATE_PROGRESS);
+                        broadcasetIntent.putExtra(EXTRA_CURRENT_POSITION,player.getCurrentPosition());
+                        broadcasetIntent.putExtra(EXTRA_DURATION,player.getDuration());
+                        sendBroadcast(broadcasetIntent);
+                    }
                 }
 
-
-            }
         }
     }
 

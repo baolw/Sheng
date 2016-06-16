@@ -53,14 +53,12 @@ public class BankFragment extends Fragment {
         bankBbFragment=new BankBbFragment();
         bankRadioFragment=new BankRadioFragment();
         bankSingerFragment=new BankSingerFragment();
+
         fragments.add(bankHotFragment);
         fragments.add(bankNewFragment);
         fragments.add(bankBbFragment);
         fragments.add(bankSingerFragment);
         fragments.add(bankRadioFragment);
-
-
-
 
         manager.addCommonFragment(fragments,getTitles());
         ModelPagerAdapter adapter = new ModelPagerAdapter(getActivity().getSupportFragmentManager(), manager);

@@ -89,6 +89,10 @@ public class BankHotFragment extends Fragment implements Consts{
         lvHot.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                if(app.getCurrentSong()==null) {
+                    intent.setAction(ACTION_START_MUSIC_TRAVERL);
+                    getActivity().sendBroadcast(intent);
+                }
                 index=position;
                 app.setPosition(index);
                 new Thread(new Runnable() {

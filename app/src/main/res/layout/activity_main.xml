@@ -34,17 +34,6 @@
             >
 
             <RadioButton
-                android:id="@+id/rb_sup_bank"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="乐库"
-                android:textColor="@drawable/color_selector"
-                android:gravity="center"
-                android:textSize="18sp"
-               android:button="@null"
-                android:checked="true" />
-            <RadioButton
                 android:id="@+id/rb_sup_news"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -52,15 +41,26 @@
                 android:text="动态"
                 android:textColor="@drawable/color_selector"
                 android:gravity="center"
-                android:textSize="16sp"
-                android:button="@null"
-                />
+                android:textSize="18sp"
+               android:button="@null"
+                android:checked="true" />
             <RadioButton
                 android:id="@+id/rb_sup_mine"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="我的"
+                android:textColor="@drawable/color_selector"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:button="@null"
+                />
+            <RadioButton
+                android:id="@+id/rb_sup_bank"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="乐库"
                 android:textColor="@drawable/color_selector"
                 android:gravity="center"
                 android:textSize="16sp"
@@ -104,6 +104,7 @@
         android:padding="4dp">
 
 
+
         <tedu.sheng.ui.CircleImageView
             android:id="@+id/civ_photo"
             android:layout_width="40dp"
@@ -111,16 +112,28 @@
             android:layout_marginLeft="4dp"
             android:src="@mipmap/ic_launcher"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"/>
-
+            android:layout_alignParentLeft="true"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/tv_welcome"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="开启音乐之旅"
+            android:gravity="center_vertical"
+            android:textSize="16sp"
+            android:layout_marginLeft="20dp"
+            android:layout_toLeftOf="@+id/iv_playorpause"
+            />
         <LinearLayout
+            android:id="@+id/ll_song_singer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toLeftOf="@+id/iv_playorpause"
             android:orientation="vertical"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:layout_toRightOf="@+id/civ_photo">
+            android:layout_toRightOf="@+id/civ_photo"
+            android:visibility="gone">
 
 
             <TextView

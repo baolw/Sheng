@@ -13,7 +13,7 @@
             android:id="@+id/iv_play_back"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
             android:src="@mipmap/ic_launcher" />
 
         <TextView
@@ -39,19 +39,15 @@
             android:textSize="14sp" />
 
 
-        <RelativeLayout
-            android:id="@+id/rl_play_touxiang"
-            android:layout_width="260dip"
-            android:layout_height="260dip"
-            android:layout_marginTop="100dp"
-            android:layout_centerHorizontal="true">
-
             <tedu.sheng.ui.CircleImageView
                 android:id="@+id/civ_play_photo"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@mipmap/ic_launcher" />
-        </RelativeLayout>
+                android:layout_width="260dip"
+                android:layout_height="260dip"
+                android:src="@mipmap/ic_launcher"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/tv_play_singer"
+                android:layout_marginTop="20dp"/>
+
 
         <TextView
             android:id="@+id/tv_play_lrc"
@@ -59,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/rl_play_touxiang"
+            android:layout_below="@+id/civ_play_photo"
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="显示歌词"

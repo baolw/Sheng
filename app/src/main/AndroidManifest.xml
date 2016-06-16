@@ -19,7 +19,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.PlayActivity"></activity>
+        <activity android:name=".ui.PlayActivity"
+
+            android:launchMode="singleTask"></activity>
         <service android:name=".service.MusicService"></service>
     </application>
 

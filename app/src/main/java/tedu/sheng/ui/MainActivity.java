@@ -19,6 +19,7 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -60,17 +61,15 @@ public class MainActivity extends FragmentActivity implements Consts{
     private RadioButton rbSupBank;
     private RadioButton rbSupNews;
     private RadioButton rbSupMine;
-
-    private List<Song> songs=new ArrayList<>();
-
     private MyApplication app;
     private BroadcastReceiver musicReceiver;
     private Song currentSong;
     private MusicModel model;
     private Intent broadIntent=new Intent();
+    private LinearLayout llSongSinger;
 
-    private boolean isRunning=false;
 
+    private TextView tvWelcome;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +106,7 @@ public class MainActivity extends FragmentActivity implements Consts{
         filter.addAction(ACTION_SET_AS_PLAY_STATE);
         filter.addAction(ACTION_SET_AS_PAUSE_STATE);
         filter.addAction(ACTION_UPDATE_PROGRESS);
+        filter.addAction(ACTION_START_MUSIC_TRAVERL);
         registerReceiver(musicReceiver,filter);
     }
 
@@ -119,27 +119,42 @@ public class MainActivity extends FragmentActivity implements Consts{
 
             if(ACTION_SET_AS_PLAY_STATE.equals(action)){
 
-                isRunning=true;
                 currentSong=app.getCurrentSong();
                 ivPlayOrPause.setImageResource(R.mipmap.pause);
                 tvSong.setText(currentSong.getTitle());
                 tvSinger.setText(currentSong.getArtist_name());
 
                 if(rotateAnimation==null) {
-                    model.displaySingle(currentSong.getInfo().getAlbum_500_500(), civPhoto);
-                    rotateAnimation = new RotateAnimation(0, 360, civPhoto.getWidth() / 2, civPhoto.getHeight() / 2);
-                    rotateAnimation.setDuration(2000);
+
+                    String path="";
+                    if("".equals(currentSong.getInfo().getAlbum_500_500())){
+                        path=currentSong.getInfo().getAlbum_500_500();
+                    }else if ("".equals(currentSong.getInfo().getAlbum_1000_1000())){
+                        path=currentSong.getInfo().getAlbum_1000_1000();
+                    }else if("".equals(currentSong.getInfo().getArtist_480_800())){
+                        path=currentSong.getInfo().getArtist_480_800();
+                    }else if("".equals(currentSong.getInfo().getArtist_640_1136())){
+                        path=currentSong.getInfo().getArtist_480_800();
+                    }else if("".equals(currentSong.getInfo().getArtist_1000_1000())){
+                        path=currentSong.getInfo().getArtist_480_800();
+                    }
+                    model.displaySingle(path, civPhoto,60,60);
+                    rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF,0.5f, Animation.RELATIVE_TO_SELF,0.5f);
+                    rotateAnimation.setDuration(10000);
                     rotateAnimation.setRepeatCount(Animation.INFINITE);
                     rotateAnimation.setInterpolator(new LinearInterpolator());
                     civPhoto.setAnimation(rotateAnimation);
                 }else{
                     civPhoto.setAnimation(rotateAnimation);
                 }
-
             }else if(ACTION_SET_AS_PAUSE_STATE.equals(action)){
-                isRunning=false;
                 civPhoto.clearAnimation();
                 ivPlayOrPause.setImageResource(R.mipmap.play);
+            }else if(ACTION_START_MUSIC_TRAVERL.equals(action)){
+                llSongSinger.setVisibility(View.VISIBLE);
+                civPhoto.setVisibility(View.VISIBLE);
+                tvWelcome.setVisibility(View.GONE);
+
             }
         }
     }
@@ -156,13 +171,13 @@ public class MainActivity extends FragmentActivity implements Consts{
             public void onPageSelected(int position) {
                 switch (position){
                     case 0:
-                        rbSupBank.setChecked(true);
-                        break;
-                    case 1:
                         rbSupNews.setChecked(true);
                         break;
-                    case 2:
+                    case 1:
                         rbSupMine.setChecked(true);
+                        break;
+                    case 2:
+                        rbSupBank.setChecked(true);
                         break;
                 }
             }
@@ -176,23 +191,25 @@ public class MainActivity extends FragmentActivity implements Consts{
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId){
-                    case R.id.rb_sup_bank:
+                    case R.id.rb_sup_news:
                         vpNav.setCurrentItem(0);
-                        rbSupBank.setTextSize(18);
-                        rbSupNews.setTextSize(16);
-                        rbSupMine.setTextSize(16);
-                        break;
-                     case R.id.rb_sup_news:
-                        vpNav.setCurrentItem(1);
                         rbSupNews.setTextSize(18);
-                         rbSupBank.setTextSize(16);
-                         rbSupMine.setTextSize(16);
-                         break;
+                        rbSupBank.setTextSize(16);
+                        rbSupMine.setTextSize(16);
+
+                        break;
                      case R.id.rb_sup_mine:
-                        vpNav.setCurrentItem(2);
-                        rbSupMine.setTextSize(18);
+                        vpNav.setCurrentItem(1);
+
+                         rbSupMine.setTextSize(18);
                          rbSupBank.setTextSize(16);
                          rbSupNews.setTextSize(16);
+                         break;
+                     case R.id.rb_sup_bank:
+                         vpNav.setCurrentItem(2);
+                         rbSupBank.setTextSize(18);
+                         rbSupNews.setTextSize(16);
+                         rbSupMine.setTextSize(16);
                          break;
                 }
             }
@@ -226,14 +243,15 @@ public class MainActivity extends FragmentActivity implements Consts{
 
         fragments=new ArrayList<>();
 
-        bankFragment=new BankFragment();
-        fragments.add(bankFragment);
 
         newsFragment=new NewsFragment();
         fragments.add(newsFragment);
 
         mineFragment=new MineFragment();
         fragments.add(mineFragment);
+
+        bankFragment=new BankFragment();
+        fragments.add(bankFragment);
 
         myFragmentPagerAdapter=new MyFragmentPagerAdapter(fragments,getSupportFragmentManager());
         vpNav.setAdapter(myFragmentPagerAdapter);
@@ -253,7 +271,24 @@ public class MainActivity extends FragmentActivity implements Consts{
         rbSupBank= (RadioButton) findViewById(R.id.rb_sup_bank);
         rbSupNews= (RadioButton) findViewById(R.id.rb_sup_news);
         rbSupMine= (RadioButton) findViewById(R.id.rb_sup_mine);
+        llSongSinger= (LinearLayout) findViewById(R.id.ll_song_singer);
+        tvWelcome= (TextView) findViewById(R.id.tv_welcome);
+
     }
+    // //处理就是点击返回键的业务
+    @Override
+    public void onBackPressed() {
+        // 隐藏界面显示状态如果可见
+        // 加一个动画让隐藏界面从最大向下平移直至不可见
+        // 隐藏界面隐藏掉
+        // 创建一个新的任务栈回到启动界面
+
+            Intent in = new Intent(Intent.ACTION_MAIN);
+            in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            in.addCategory(Intent.CATEGORY_HOME);
+            startActivity(in);
+        }
+
 
 
 
