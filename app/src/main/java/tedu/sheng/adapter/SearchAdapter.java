@@ -6,6 +6,7 @@ import java.util.List;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import tedu.sheng.entity.SongSearch;
 public class SearchAdapter extends BaseAdapter{
 	private List<SongSearch> data=new ArrayList<SongSearch>();
 	private Context context;
+
 	public SearchAdapter(List<SongSearch> data, Context context) {
 		super();
 		this.data = data;
@@ -43,17 +45,17 @@ public class SearchAdapter extends BaseAdapter{
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Holder holder=null;
+		ViewHolder holder;
 		if(convertView==null){
 			convertView=LayoutInflater.from(context).inflate(R.layout.item_search, null);
-			holder=new Holder();
-			holder.title=(TextView) convertView.findViewById(R.id.tv_item_song);
-			holder.author=(TextView) convertView.findViewById(R.id.tv_item_singer);
+			holder=new ViewHolder();
+			holder.title=(TextView) convertView.findViewById(R.id.tv_item_search_song);
+			holder.author=(TextView) convertView.findViewById(R.id.tv_item_search_singer);
 			holder.tvNum= (TextView) convertView.findViewById(R.id.tv_item_search_num);
 			holder.ivSearchDown= (ImageView) convertView.findViewById(R.id.iv_item_search_down);
 			convertView.setTag(holder);
 		}else{
-			holder=(Holder) convertView.getTag();
+			holder=(ViewHolder) convertView.getTag();
 		}
 		SongSearch search=data.get(position);
 		if (position<3){
@@ -70,11 +72,12 @@ public class SearchAdapter extends BaseAdapter{
 		}
 		holder.title.setText(search.getTitle());
 		holder.author.setText(search.getAuthor());
+
 		return convertView;
 	}
 	
 	
-	class Holder{
+	class ViewHolder{
 		TextView title,author;
 		TextView tvNum;
 		ImageView ivSearchDown;

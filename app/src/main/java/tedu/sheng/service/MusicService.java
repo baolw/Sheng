@@ -6,16 +6,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
+import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
 import tedu.sheng.app.MyApplication;
 import tedu.sheng.entity.Song;
+import tedu.sheng.entity.SongUrl;
 import tedu.sheng.model.MusicModel;
 import tedu.sheng.util.Consts;
 
@@ -152,6 +155,8 @@ public class MusicService extends Service implements Consts {
 
     //暂停
     private void pause() {
+
+
         player.pause();
         pausePosition=player.getCurrentPosition();
         broadcasetIntent.setAction(ACTION_SET_AS_PAUSE_STATE);
@@ -164,11 +169,45 @@ public class MusicService extends Service implements Consts {
         app.setIsRunning(false);
     }
 
+
+    public String getPath(int version) {
+        String path = "";
+        if (model.isHave(currentSong, 0)) {
+            File root = Environment.
+                    getExternalStoragePublicDirectory
+                            (Environment.DIRECTORY_MUSIC);
+            SongUrl downUrl = currentSong.getUrls().get(0);
+
+            String name = "_0" +
+                    downUrl.getFile_bitrate() +
+                    currentSong.getTitle()
+                    + ".mp3";
+            File sdk_Song = new File(root, name);
+            path = sdk_Song.getAbsolutePath();
+        } else {
+            path = currentSong.getUrls().get(0).getShow_link();
+
+        }
+        return path;
+
+    }
     private void play() {
+
+        String path="";
+        if (getPath(0) != null) {
+            path=getPath(0);
+        }else if (getPath(1)!=null){
+            path=getPath(1);
+        }else if(getPath(2)!=null){
+            path=getPath(2);
+        }
+
 
         try {
             player.reset();
-            player.setDataSource(currentSong.getUrls().get(1).getShow_link());
+            player.setDataSource(path);
+
+
             player.prepare();
             player.seekTo(pausePosition);
             player.start();

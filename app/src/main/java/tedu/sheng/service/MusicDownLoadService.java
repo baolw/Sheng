@@ -22,6 +22,7 @@ import tedu.sheng.util.HttpUtils;
 
 
 public class MusicDownLoadService extends IntentService{
+	Song song;
 	public MusicDownLoadService(){
 		super("name");
 	}
@@ -36,7 +37,7 @@ public class MusicDownLoadService extends IntentService{
 	protected void onHandleIntent(Intent intent) {
 
 		Log.e("teduceshxiazai","测试下载功能");
-		Song song=(Song) intent.getSerializableExtra("song");
+		song=(Song) intent.getSerializableExtra("song");
 
 		int version=intent.getIntExtra("version", 0);
 
@@ -68,8 +69,11 @@ public class MusicDownLoadService extends IntentService{
 				fos.write(buffer, 0, length);
 				fos.flush();
 				length=is.read(buffer);
-				all_byte+=length;
-			count="已经下载"+Math.floor(all_byte*100.0/song_size)+"%";
+				if(length!=-1) {
+					all_byte += length;
+				}
+				Log.e("tedu下载数据量","song_size-->"+song_size+"--<>--all_byte-->"+all_byte);
+				count="已经下载"+Math.floor(all_byte*100.0/song_size)+"%";
 				if(all_byte==song_size){
 					count="下载成功";
 				}
@@ -100,7 +104,7 @@ public class MusicDownLoadService extends IntentService{
 		Notification.Builder builder=new
 				Notification.Builder
 				(getApplicationContext());
-		builder.setContentTitle("音乐下载");
+		builder.setContentTitle("正在下载-->"+song.getTitle());
 		builder.setContentText(count);
 		builder.setSmallIcon
 		(R.mipmap.download);

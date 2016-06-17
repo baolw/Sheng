@@ -49,7 +49,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="我的"
+                android:text="本地"
                 android:textColor="@drawable/color_selector"
                 android:gravity="center"
                 android:textSize="16sp"

@@ -3,11 +3,13 @@
     package="tedu.sheng">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".app.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -24,9 +26,10 @@
 
         <service android:name=".service.MusicService" />
 
-        <service android:name=".service.MusicDownLoadService"></service>
+        <service android:name=".service.MusicDownLoadService"/>
         <activity android:name=".ui.RegistActivity" />
-        <activity android:name=".ui.SearchActivity"/>
+        <activity android:name=".ui.SearchActivity"
+            />
     </application>
 
 </manifest>

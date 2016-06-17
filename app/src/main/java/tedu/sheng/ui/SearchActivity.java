@@ -1,10 +1,12 @@
 package tedu.sheng.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,14 +18,11 @@ import java.util.List;
 
 import tedu.sheng.R;
 import tedu.sheng.adapter.SearchAdapter;
-import tedu.sheng.app.MyApplication;
-import tedu.sheng.entity.Song;
-import tedu.sheng.entity.SongInfo;
 import tedu.sheng.entity.SongSearch;
 import tedu.sheng.model.MusicModel;
 import tedu.sheng.util.Consts;
 
-public class SearchActivity extends AppCompatActivity implements Consts{
+public class SearchActivity extends Activity implements Consts{
 
 
     private EditText etSearch;
@@ -46,7 +45,7 @@ public class SearchActivity extends AppCompatActivity implements Consts{
                     data.addAll(searchData);
                     adapter.notifyDataSetChanged();
                     break;
-                case 1:
+
             }
         };
     };
@@ -57,22 +56,23 @@ public class SearchActivity extends AppCompatActivity implements Consts{
 
         model=new MusicModel(this);
         init();
-        setAdapter();
+        setadapter();
         setListener();
     }
 
     private void setListener() {
-        final String name=etSearch.getText().toString();
+
         btSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final String name=etSearch.getText().toString();
                 if(name.length()>0){
                     new Thread(){
                         @Override
                         public void run() {
-                            data=model.search(name);
-                            Message msg=handler.obtainMessage(0);
-                            msg.obj=data;
+                            List<SongSearch> searchs=model.search(name);
+
+                            Message msg=handler.obtainMessage(0,searchs);
                            handler.sendMessage(msg);
                         }
                     }.start();
@@ -80,10 +80,9 @@ public class SearchActivity extends AppCompatActivity implements Consts{
             }
         });
 
-
     }
 
-    private void setAdapter() {
+    private void setadapter() {
         adapter=new SearchAdapter(data,this);
         lvSearch.setAdapter(adapter);
     }

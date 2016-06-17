@@ -278,12 +278,12 @@ public class MusicModel {
             JSONObject obj = new JSONObject(str);
             JSONArray song_list = obj.getJSONArray("song_list");
             for (int i = 0; i < song_list.length(); i++) {
-                JSONObject serach = song_list.getJSONObject(i);
-                String title = (serach.isNull("title") ? "" : serach.getString("title"));
-                String author = (serach.isNull("author") ? "" : serach.getString("author"));
-                String song_id = (serach.isNull("song_id") ? "" : serach.getString("song_id"));
-                SongSearch song_srach = new SongSearch(title, song_id, author);
-                data.add(song_srach);
+                JSONObject search = song_list.getJSONObject(i);
+                String title = (search.isNull("title") ? "" : search.getString("title"));
+                String author = (search.isNull("author") ? "" : search.getString("author"));
+                String song_id = (search.isNull("song_id") ? "" : search.getString("song_id"));
+                SongSearch song_search = new SongSearch(title, song_id, author);
+                data.add(song_search);
             }
 
         } catch (JSONException e) {
@@ -300,7 +300,7 @@ public class MusicModel {
                         (Environment.DIRECTORY_MUSIC);
         SongUrl downUrl = song.getUrls().get(version);
 
-        String name = "+" + version +
+        String name = "_" + version +
                 downUrl.getFile_bitrate() +
                 song.getTitle()
                 + ".mp3";

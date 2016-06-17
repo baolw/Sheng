@@ -18,6 +18,7 @@ import android.renderscript.Allocation;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
@@ -300,6 +301,16 @@ public class PlayActivity extends Activity implements Consts {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(receiver!=null){
+            unregisterReceiver(receiver);
+            receiver=null;
+        }
+        super.onDestroy();
 
     }
 

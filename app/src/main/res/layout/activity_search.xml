@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="tedu.sheng.ui.SearchActivity"
-    android:orientation="vertical">
+    >
 
     <LinearLayout
+        android:id="@+id/ll_search_top"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="48dp"
         android:orientation="horizontal"
         >
         <EditText
             android:id="@+id/et_search"
             android:layout_width="0dip"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             />
         <Button
             android:id="@+id/bt_search"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="搜索"
             />
 
@@ -29,11 +30,11 @@
     <ListView
         android:id="@+id/lv_search"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_below="@id/ll_search_top"
         >
 
     </ListView>
 
 
-</LinearLayout>
+</RelativeLayout>
