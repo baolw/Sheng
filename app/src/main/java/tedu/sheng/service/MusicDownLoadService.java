@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
@@ -104,6 +105,7 @@ public class MusicDownLoadService extends IntentService{
 		Notification.Builder builder=new
 				Notification.Builder
 				(getApplicationContext());
+
 		builder.setContentTitle("正在下载-->"+song.getTitle());
 		builder.setContentText(count);
 		builder.setSmallIcon

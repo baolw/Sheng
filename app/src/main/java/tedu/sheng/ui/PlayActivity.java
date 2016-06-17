@@ -72,6 +72,14 @@ public class PlayActivity extends Activity implements Consts {
     private boolean isTrackingTouch;
 
     private List<SongLrc> songLrcs;
+    //记录播放时间
+    String progressTime;
+    String totalTime;
+//显示默认歌词
+    String content;
+
+    //当前的进度条位置
+    int currentPosition;
 
     InnerReceiver receiver;
     private Handler handler = new Handler() {
@@ -81,8 +89,7 @@ public class PlayActivity extends Activity implements Consts {
                 case 0:
                     tvPlayLrc.setText("");
                     civPlayPhoto.clearAnimation();
-                    app.setCurrentSong(currentSong);
-                    app.setCurrentIndex(index);
+
                     broadIntent.setAction(ACTION_NEXT);
                     broadIntent.putExtra(EXTRA_CURRENT_MUSIC, currentSong);
                     sendBroadcast(broadIntent);
@@ -91,8 +98,7 @@ public class PlayActivity extends Activity implements Consts {
                 case 1:
                     tvPlayLrc.setText("");
                     civPlayPhoto.clearAnimation();
-                    app.setCurrentSong(currentSong);
-                    app.setCurrentIndex(index);
+
                     broadIntent.setAction(ACTION_PREVIOUS);
                     broadIntent.putExtra(EXTRA_CURRENT_MUSIC, currentSong);
                     sendBroadcast(broadIntent);
@@ -106,10 +112,10 @@ public class PlayActivity extends Activity implements Consts {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
-        if (savedInstanceState == null) {
-            app = (MyApplication) getApplication();
-            model = new MusicModel(this);
-            currentSong = app.getCurrentSong();
+
+         app = (MyApplication) getApplication();
+        model = new MusicModel(this);
+        currentSong = app.getCurrentSong();
             index=app.getCurrentIndex();
             receiver = new InnerReceiver();
             IntentFilter filter = new IntentFilter();
@@ -121,12 +127,27 @@ public class PlayActivity extends Activity implements Consts {
             setViews();
             setListener();
 
-        }
+
     }
 
 
     private void setViews() {
 
+
+        if (app.getProgress()!=-1&&app.getDuration()!=-1){
+            String progressTime = CommonUtils.getFormattedTime(app.getProgress());
+            String totalTime = CommonUtils.getFormattedTime(app.getDuration());
+            tvPlayProgress.setText(progressTime);
+            tvPlayTotal.setText(totalTime);
+
+            sbPlayProgress.setMax(app.getDuration());
+            if (!isTrackingTouch) {
+                sbPlayProgress.setProgress(app.getProgress());
+            }
+        }
+        if(content!=null){
+            tvPlayLrc.setText(content);
+        }
 
         if (app.getIsNetWork()) {
             if (currentSong != null) {
@@ -134,9 +155,15 @@ public class PlayActivity extends Activity implements Consts {
                 tvPlaySinger.setText(currentSong.getArtist_name());
 
 
-                model.displaySingle(currentSong.getInfo().getAlbum_500_500(), civPlayPhoto, 260, 260);
+                if("".equals(currentSong.getInfo().getAlbum_500_500())){
 
-                model.displayblur(currentSong.getInfo().getAlbum_500_500(), ivPlayBack);
+                    civPlayPhoto.setImageResource(R.mipmap.album);
+                    ivPlayBack.setImageResource(R.mipmap.background);
+                }else {
+                    model.displaySingle(currentSong.getInfo().getAlbum_500_500(), civPlayPhoto, 260, 260);
+                    model.displayblur(currentSong.getInfo().getAlbum_500_500(), ivPlayBack);
+                }
+
 
                 if (app.getIsRunning()) {
                     ivPlayPlay.setImageResource(R.mipmap.pause);
@@ -147,8 +174,8 @@ public class PlayActivity extends Activity implements Consts {
                         rotateAnimation.setRepeatCount(Animation.INFINITE);
                         rotateAnimation.setFillAfter(true);
                         rotateAnimation.setInterpolator(new LinearInterpolator());
-                        civPlayPhoto.setAnimation(rotateAnimation);
                     }
+                    civPlayPhoto.setAnimation(rotateAnimation);
                 } else {
 
                     ivPlayPlay.setImageResource(R.mipmap.play_big);
@@ -197,33 +224,35 @@ public class PlayActivity extends Activity implements Consts {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            //接收到暂停和开始的状态操作
             if (ACTION_SET_AS_PAUSE_STATE2.equals(action)) {
                 setViews();
-
-
-
             } else if (ACTION_SET_AS_PLAY_STATE2.equals(action)) {
                 setViews();
-
-
+                //更新播放过程的操作
             }else if(ACTION_UPDATE_PROGRESS.equals(action)) {
-                int currentPosition = intent.getIntExtra(EXTRA_CURRENT_POSITION, 0);
+                currentPosition = intent.getIntExtra(EXTRA_CURRENT_POSITION, 0);
                 int duration = intent.getIntExtra(EXTRA_DURATION, 0);
                 sbPlayProgress.setMax(duration);
-                if (!isTrackingTouch) {
+                if (!app.getIsTrackingTouch()) {
                     sbPlayProgress.setProgress(currentPosition);
                 }
-                String progressTime = CommonUtils.getFormattedTime(currentPosition);
-                String totalTime = CommonUtils.getFormattedTime(duration);
+
+                progressTime = CommonUtils.getFormattedTime(currentPosition);
+                totalTime = CommonUtils.getFormattedTime(duration);
                 tvPlayProgress.setText(progressTime);
                 tvPlayTotal.setText(totalTime);
+
+                app.setProgress(currentPosition);
+                app.setDuration(duration);
 
                 if (app.getIsNetWork()) {
                     songLrcs = app.getSongLrcs();
                     for (int i = 0; i < songLrcs.size(); i++) {
                         SongLrc lrc = songLrcs.get(i);
                         String time = lrc.getTime();
-                        String content = lrc.getContent();
+                        content = lrc.getContent();
+                        app.setContent(content);
                         if (time.equals(progressTime)) {
                             tvPlayLrc.setText(content);
                         }
@@ -249,15 +278,17 @@ public class PlayActivity extends Activity implements Consts {
 
                     broadIntent.setAction(ACTION_PLAY_OR_PAUSE);
                     sendBroadcast(broadIntent);
+
                 }
             }
 
         });
+        //下一首操作
         ivPlayNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 index=app.getCurrentIndex();
-                if(app.getIsRunning()) {
+                if(app.getIsNetWork()) {
                     new Thread() {
                         @Override
                         public void run() {
@@ -266,50 +297,54 @@ public class PlayActivity extends Activity implements Consts {
                             if (index >= app.getNetSongs().size()) {
                                 index = 0;
                             }
-
-
                             currentSong = model.getSongInfo(app.getNetSongs().get(index));
-
+                            app.setCurrentSong(currentSong);
+                            app.setCurrentIndex(index);
                             handler.sendEmptyMessage(0);
                         }
                     }.start();
 
-                }/*else{
+                }else{
                     index++;
-                    if (index >= app.getNetSongs().size()) {
+                    if (index >= app.getLocalSongs().size()) {
                         index = 0;
                     }
+                    app.setCurrentIndex(index);
                     broadIntent.setAction(ACTION_NEXT);
                     broadIntent.putExtra(EXTRA_CURRENT_POSITION, index);
                     sendBroadcast(broadIntent);
-                }*/
+                }
 
             }
         });
         ivPlayPre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                index=app.getCurrentIndex();
                 if(app.getIsNetWork()) {
                     new Thread() {
                         @Override
                         public void run() {
                             index--;
-                            if (index <= 0) {
+                            if (index < 0) {
                                 index = app.getNetSongs().size() - 1;
                             }
                             currentSong = model.getSongInfo(app.getNetSongs().get(index));
                             handler.sendEmptyMessage(1);
+                            app.setCurrentSong(currentSong);
+                            app.setCurrentIndex(index);
                         }
                     }.start();
-                }/*else{
+                }else{
                     index--;
-                    if (index <= 0) {
-                        index = app.getNetSongs().size() - 1;
+                    if (index < 0) {
+                        index = app.getLocalSongs().size() - 1;
                     }
-                    broadIntent.setAction(ACTION_NEXT);
+                    app.setCurrentIndex(index);
+                    broadIntent.setAction(ACTION_PREVIOUS);
                     broadIntent.putExtra(EXTRA_CURRENT_POSITION, index);
                     sendBroadcast(broadIntent);
-                }*/
+                }
             }
         });
          sbPlayProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -320,17 +355,18 @@ public class PlayActivity extends Activity implements Consts {
 
              @Override
              public void onStartTrackingTouch(SeekBar seekBar) {
-                 isTrackingTouch=true;
+                 app.setIsTrackingTouch(true);
 
              }
 
              @Override
              public void onStopTrackingTouch(SeekBar seekBar) {
 
-                 isTrackingTouch=false;
+
                  broadIntent.setAction(ACTION_PLAY_FROM_PROGRESS);
                  broadIntent.putExtra(EXTRA_PROGRESS,sbPlayProgress.getProgress());
                  sendBroadcast(broadIntent);
+                 app.setIsTrackingTouch(false);
              }
          });
     }

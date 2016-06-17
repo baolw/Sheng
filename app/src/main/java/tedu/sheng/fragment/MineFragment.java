@@ -52,10 +52,11 @@ public class MineFragment extends Fragment implements Consts{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 app.setCurrentIndex(position);
+                app.setIsNetWork(false);
                 if(app.getCurrentIndex()!=-1){
                     intent.setAction(ACTION_START_MUSIC_TRAVERL);
-                    getActivity().sendBroadcast(intent);}
-                app.setIsNetWork(false);
+                    getActivity().sendBroadcast(intent);
+                }
                 intent.setAction(ACTION_PLAY_POSITION);
                 intent.putExtra(EXTRA_MUSIC_INDEX, position);
                 getActivity().sendBroadcast(intent);

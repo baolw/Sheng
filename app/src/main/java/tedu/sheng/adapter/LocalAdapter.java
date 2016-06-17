@@ -42,7 +42,7 @@ public class LocalAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         Holder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_hot, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_local, null);
             holder = new Holder();
             holder.tvSong = (TextView) convertView.findViewById(R.id.tv_item_song);
             holder.tvSinger = (TextView) convertView.findViewById(R.id.tv_item_singer);

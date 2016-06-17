@@ -61,7 +61,7 @@ public class BankHotFragment extends Fragment implements Consts{
                     break;
                 case 2:
                     Song s= (Song) msg.obj;
-                    app.setCurrentSong(s);
+
                     if(s!=null){
                         intent.setAction(ACTION_PLAY_POSITION_NET);
                         intent.putExtra(EXTRA_MUSIC_INDEX,index);
@@ -90,16 +90,21 @@ public class BankHotFragment extends Fragment implements Consts{
         lvHot.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                app.setIsNetWork(true);
+                app.setNetSongs(songs);
                 if(app.getCurrentSong()==null) {
                     intent.setAction(ACTION_START_MUSIC_TRAVERL);
                     getActivity().sendBroadcast(intent);
                 }
                 index=position;
-                app.setCurrentIndex(index);
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         Song s=model.getSongInfo(songs.get(position));
+                        //多线程的理解，必须将设置参数放在这里，不能放在handler里，否则会造成多线程运行混乱，并发，导致数据错误
+                        app.setCurrentSong(s);
+                        app.setCurrentIndex(index);
                         Message msg=handler.obtainMessage(2,s);
                         handler.sendMessage(msg);
 

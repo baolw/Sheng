@@ -102,7 +102,6 @@ public class MainActivity extends FragmentActivity implements Consts{
         IntentFilter filter=new IntentFilter();
         filter.addAction(ACTION_SET_AS_PLAY_STATE);
         filter.addAction(ACTION_SET_AS_PAUSE_STATE);
-        filter.addAction(ACTION_UPDATE_PROGRESS);
         filter.addAction(ACTION_START_MUSIC_TRAVERL);
         registerReceiver(musicReceiver,filter);
     }
@@ -123,10 +122,14 @@ public class MainActivity extends FragmentActivity implements Consts{
                     tvSong.setText(currentSong.getTitle());
                     tvSinger.setText(currentSong.getArtist_name());
 
-                    if (rotateAnimation == null) {
-
+                    if("".equals(currentSong.getInfo().getAlbum_500_500())){
+                        civPhoto.setImageResource(R.mipmap.album);
+                    }else{
 
                         model.displaySingle(currentSong.getInfo().getAlbum_500_500(), civPhoto, 60, 60);
+                    }
+                    if (rotateAnimation == null) {
+
                         rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
                         rotateAnimation.setDuration(10000);
                         rotateAnimation.setRepeatCount(Animation.INFINITE);

@@ -19,8 +19,10 @@ import java.util.List;
 import tedu.sheng.app.MyApplication;
 import tedu.sheng.entity.MineSong;
 import tedu.sheng.entity.Song;
+import tedu.sheng.entity.SongLrc;
 import tedu.sheng.entity.SongUrl;
 import tedu.sheng.model.MusicModel;
+import tedu.sheng.util.CommonUtils;
 import tedu.sheng.util.Consts;
 
 
@@ -71,10 +73,12 @@ public class MusicService extends Service implements Consts {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 currenMusicIndex++;
-                if(currenMusicIndex>app.getNetSongs().size()){
+                if(currenMusicIndex>=app.getNetSongs().size()){
                     currenMusicIndex=0;
                 }
                 currentSong=model.getSongInfo(app.getNetSongs().get(currenMusicIndex));
+                app.setCurrentIndex(currenMusicIndex);
+                app.setCurrentSong(currentSong);
                 next();
             }
         });
@@ -170,7 +174,7 @@ public class MusicService extends Service implements Consts {
     //暂停
     private void pause() {
 
-
+        app.setIsRunning(false);
         player.pause();
         pausePosition=player.getCurrentPosition();
         broadcasetIntent.setAction(ACTION_SET_AS_PAUSE_STATE);
@@ -180,7 +184,6 @@ public class MusicService extends Service implements Consts {
         broadcasetIntent.setAction(ACTION_SET_AS_PAUSE_STATE2);
         sendBroadcast(broadcasetIntent);
 
-        app.setIsRunning(false);
     }
 
 
@@ -207,6 +210,8 @@ public class MusicService extends Service implements Consts {
     }
     private void play() {
 
+        app.setIsRunning(true);
+
         String path="";
         if(app.getIsNetWork()) {
             if (getPath(0) != null) {
@@ -224,8 +229,6 @@ public class MusicService extends Service implements Consts {
         try {
             player.reset();
             player.setDataSource(path);
-
-
             player.prepare();
             player.seekTo(pausePosition);
             player.start();
@@ -234,14 +237,11 @@ public class MusicService extends Service implements Consts {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         //将播放歌曲信息同步到activity界面中
         broadcasetIntent.setAction(ACTION_SET_AS_PLAY_STATE);
         sendBroadcast(broadcasetIntent);
-
         broadcasetIntent.setAction(ACTION_SET_AS_PLAY_STATE2);
         sendBroadcast(broadcasetIntent);
-
         if(app.getIsNetWork()) {
             new Thread() {
                 @Override
@@ -251,7 +251,6 @@ public class MusicService extends Service implements Consts {
             }.start();
         }
 
-        app.setIsRunning(true);
         startUpdateProgressThread();
 
 
@@ -300,7 +299,26 @@ public class MusicService extends Service implements Consts {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+
+
+
                     if (player.isPlaying()) {
+
+                    app.setProgress(player.getCurrentPosition());
+                        app.setDuration(player.getDuration());
+
+                        if (app.getIsNetWork()) {
+                            List<SongLrc> songLrcs = app.getSongLrcs();
+                            for (int i = 0; i < songLrcs.size(); i++) {
+                                SongLrc lrc = songLrcs.get(i);
+                                String content = lrc.getContent();
+                                app.setContent(content);
+                            }
+
+                        }
+
+
+
                         broadcasetIntent.setAction(ACTION_UPDATE_PROGRESS);
                         broadcasetIntent.putExtra(EXTRA_CURRENT_POSITION,player.getCurrentPosition());
                         broadcasetIntent.putExtra(EXTRA_DURATION,player.getDuration());
