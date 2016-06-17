@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import tedu.sheng.app.MyApplication;
+import tedu.sheng.entity.MineSong;
 import tedu.sheng.entity.Song;
 import tedu.sheng.entity.SongUrl;
 import tedu.sheng.model.MusicModel;
@@ -44,22 +45,23 @@ public class MusicService extends Service implements Consts {
     private MediaPlayer player;
 
 
-    private boolean looper;
     private MyApplication app;
 
 
     //播放歌曲的下标,即当前是列表中的第几首
-    private int index;
 
     private MusicModel model;
 
 
+
+    //本地音乐集合
+    private List<MineSong> musics;
     @Override
     public void onCreate() {
         super.onCreate();
         app = (MyApplication) getApplication();
         netSongs = app.getNetSongs();
-
+        musics=app.getLocalSongs();
         model=new MusicModel(getApplication());
 
 
@@ -109,14 +111,26 @@ public class MusicService extends Service implements Consts {
                 }
             } else if (ACTION_NEXT.equals(action)) {
 
-                currentSong= (Song) intent.getSerializableExtra(EXTRA_CURRENT_MUSIC);
+                if(app.getIsNetWork()) {
+                    currentSong = (Song) intent.getSerializableExtra(EXTRA_CURRENT_MUSIC);
+                }else{
+                    currenMusicIndex=intent.getIntExtra(EXTRA_CURRENT_POSITION,0);
+                }
                  next();
             } else if (ACTION_PREVIOUS.equals(action)) {
-                currentSong= (Song) intent.getSerializableExtra(EXTRA_CURRENT_MUSIC);
+                if(app.getIsNetWork()){
+                    currentSong= (Song) intent.getSerializableExtra(EXTRA_CURRENT_MUSIC);
+                }else{
+                    currenMusicIndex=intent.getIntExtra(EXTRA_CURRENT_POSITION,0);
+                }
                 previous();
             } else if (ACTION_PLAY_POSITION.equals(action)) {
                 int position = intent.getIntExtra(EXTRA_MUSIC_INDEX, 0);
-                currentSong = (Song) intent.getSerializableExtra(EXTRA_CURRENT_MUSIC);
+                if(app.getIsNetWork()){
+                    currentSong = (Song) intent.getSerializableExtra(EXTRA_CURRENT_MUSIC);
+                }else{
+
+                }
                 play(position);
             } else if (ACTION_PLAY_FROM_PROGRESS.equals(action)) {
                 int progress = intent.getIntExtra(EXTRA_PROGRESS, 0);
@@ -194,12 +208,16 @@ public class MusicService extends Service implements Consts {
     private void play() {
 
         String path="";
-        if (getPath(0) != null) {
-            path=getPath(0);
-        }else if (getPath(1)!=null){
-            path=getPath(1);
-        }else if(getPath(2)!=null){
-            path=getPath(2);
+        if(app.getIsNetWork()) {
+            if (getPath(0) != null) {
+                path = getPath(0);
+            } else if (getPath(1) != null) {
+                path = getPath(1);
+            } else if (getPath(2) != null) {
+                path = getPath(2);
+            }
+        }else{
+            path=musics.get(currenMusicIndex).getPath();
         }
 
 
@@ -224,13 +242,14 @@ public class MusicService extends Service implements Consts {
         broadcasetIntent.setAction(ACTION_SET_AS_PLAY_STATE2);
         sendBroadcast(broadcasetIntent);
 
-        new Thread(){
-            @Override
-            public void run() {
-                app.setSongLrcs(model.getLrc(currentSong.getLrclink()));
-            }
-        }.start();
-
+        if(app.getIsNetWork()) {
+            new Thread() {
+                @Override
+                public void run() {
+                    app.setSongLrcs(model.getLrc(currentSong.getLrclink()));
+                }
+            }.start();
+        }
 
         app.setIsRunning(true);
         startUpdateProgressThread();
@@ -240,22 +259,13 @@ public class MusicService extends Service implements Consts {
     }
 
     private void play(int position) {
-        index = position;
+        currenMusicIndex = position;
         pausePosition = 0;
         play();
     }
 
 
-    public interface IMusicPlayer extends Serializable {
-        //播放暂停
-        void playOrPause();
 
-        //播放歌曲
-        void playCurrentMusic(Song song, List<Song> data, int index);
-
-        //控制进度
-        void seekTo(int position);
-    }
 
     //开始线程
     public void startUpdateProgressThread(){

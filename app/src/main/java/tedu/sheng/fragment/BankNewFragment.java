@@ -95,7 +95,7 @@ public class BankNewFragment extends Fragment implements Consts{
                     getActivity().sendBroadcast(intent);
                 }
                 index=position;
-                app.setPosition(index);
+                app.setCurrentIndex(index);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {

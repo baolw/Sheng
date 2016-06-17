@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -112,36 +114,60 @@ public class MainActivity extends FragmentActivity implements Consts{
             RotateAnimation  rotateAnimation=null;
             String action=intent.getAction();
 
-            if(ACTION_SET_AS_PLAY_STATE.equals(action)){
 
-                currentSong=app.getCurrentSong();
-                ivPlayOrPause.setImageResource(R.mipmap.pause);
-                tvSong.setText(currentSong.getTitle());
-                tvSinger.setText(currentSong.getArtist_name());
+            if(ACTION_SET_AS_PLAY_STATE.equals(action)) {
+                if (app.getIsNetWork()) {
 
-                if(rotateAnimation==null) {
+                    currentSong = app.getCurrentSong();
+                    ivPlayOrPause.setImageResource(R.mipmap.pause);
+                    tvSong.setText(currentSong.getTitle());
+                    tvSinger.setText(currentSong.getArtist_name());
+
+                    if (rotateAnimation == null) {
 
 
+                        model.displaySingle(currentSong.getInfo().getAlbum_500_500(), civPhoto, 60, 60);
+                        rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                        rotateAnimation.setDuration(10000);
+                        rotateAnimation.setRepeatCount(Animation.INFINITE);
+                        rotateAnimation.setInterpolator(new LinearInterpolator());
+                        civPhoto.setAnimation(rotateAnimation);
+                    } else {
+                        civPhoto.setAnimation(rotateAnimation);
+                    }
 
-                    model.displaySingle(currentSong.getInfo().getAlbum_500_500(), civPhoto,60,60);
-                    rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF,0.5f, Animation.RELATIVE_TO_SELF,0.5f);
+                }
+                    else{
+                    if(app.getLocalSongs().get(app.getCurrentIndex()).getAlbumArt() == null) {
+                        civPhoto.setImageResource(R.mipmap.album);
+                    } else {
+                        Bitmap bm= BitmapFactory.decodeFile(app.getLocalSongs().get(app.getCurrentIndex()).getAlbumArt());
+                        civPhoto.setImageBitmap(bm);
+                    }
+                    ivPlayOrPause.setImageResource(R.mipmap.pause);
+                        tvSong.setText(app.getLocalSongs().get(app.getCurrentIndex()).getName());
+                        tvSinger.setText(app.getLocalSongs().get(app.getCurrentIndex()).getArtist());
+                    rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
                     rotateAnimation.setDuration(10000);
                     rotateAnimation.setRepeatCount(Animation.INFINITE);
                     rotateAnimation.setInterpolator(new LinearInterpolator());
                     civPhoto.setAnimation(rotateAnimation);
-                }else{
-                    civPhoto.setAnimation(rotateAnimation);
-                }
-            }else if(ACTION_SET_AS_PAUSE_STATE.equals(action)){
-                civPhoto.clearAnimation();
-                ivPlayOrPause.setImageResource(R.mipmap.play);
-            }else if(ACTION_START_MUSIC_TRAVERL.equals(action)){
-                llSongSinger.setVisibility(View.VISIBLE);
-                civPhoto.setVisibility(View.VISIBLE);
-                tvWelcome.setVisibility(View.GONE);
+                    }
 
+                }
+
+                else if (ACTION_SET_AS_PAUSE_STATE.equals(action)) {
+
+                    civPhoto.clearAnimation();
+                    ivPlayOrPause.setImageResource(R.mipmap.play);
+                } else if (ACTION_START_MUSIC_TRAVERL.equals(action)) {
+                    llSongSinger.setVisibility(View.VISIBLE);
+                    civPhoto.setVisibility(View.VISIBLE);
+                    tvWelcome.setVisibility(View.GONE);
+
+                }
             }
-        }
+
     }
 
 
@@ -203,8 +229,15 @@ public class MainActivity extends FragmentActivity implements Consts{
         ivPlayOrPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(currentSong!=null){
-                    if(currentSong!=null) {
+                if(app.getIsNetWork()) {
+                    if (currentSong != null) {
+                        if (currentSong != null) {
+                            broadIntent.setAction(ACTION_PLAY_OR_PAUSE);
+                            sendBroadcast(broadIntent);
+                        }
+                    }
+                }else{
+                    if(app.getCurrentIndex()!=-1){
                         broadIntent.setAction(ACTION_PLAY_OR_PAUSE);
                         sendBroadcast(broadIntent);
                     }

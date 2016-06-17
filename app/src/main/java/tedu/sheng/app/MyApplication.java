@@ -5,6 +5,8 @@ import android.util.Log;
 
 import java.util.List;
 
+import tedu.sheng.dal.MusicDaoFactory;
+import tedu.sheng.entity.MineSong;
 import tedu.sheng.entity.Song;
 import tedu.sheng.entity.SongLrc;
 import tedu.sheng.entity.SongSearch;
@@ -15,7 +17,8 @@ import tedu.sheng.entity.SongSearch;
 public class MyApplication extends Application{
     //不包含地址
     private List<Song> netSongs;
-    private List<Song> localSongs;
+
+    private List<MineSong> localSongs;
     //当前播放的歌曲
     private Song currentSong;
 //是否在播放
@@ -33,12 +36,40 @@ public class MyApplication extends Application{
     }
 
     private List<SongLrc> songLrcs;
+    private boolean isNetWork=true;
     private int position;
+
+    private int currentIndex=-1;
     @Override
     public void onCreate() {
         super.onCreate();
-        //setLocalSongs();
+        setLocalSongs();
 
+    }
+
+
+    public int getCurrentIndex() {
+        return currentIndex;
+    }
+
+    public void setCurrentIndex(int currentIndex) {
+        this.currentIndex = currentIndex;
+    }
+
+    public boolean getIsNetWork() {
+        return isNetWork;
+    }
+
+    public void setIsNetWork(boolean netWork) {
+        isNetWork = netWork;
+    }
+
+    public List<MineSong> getLocalSongs() {
+        return localSongs;
+    }
+
+    public void setLocalSongs() {
+        this.localSongs = MusicDaoFactory.newInstance(this).getData();
     }
 
     public List<SongLrc> getSongLrcs() {
@@ -74,15 +105,8 @@ public class MyApplication extends Application{
         this.netSongs=netSongs;
     }
 
-    public List<Song> getLocalSongs() {
-        return localSongs;
-    }
 
-    public void setLocalSongs() {
-        this.localSongs = localSongs;
-    }
-
-    //当前播放的歌曲
+    //当前播放的歌曲下标
     public void setCurrentSong(Song currentSong){
         this.currentSong=currentSong;
     }

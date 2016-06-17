@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/background" />
 
         <TextView
             android:id="@+id/tv_play_song"
@@ -23,7 +23,6 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="18dp"
-            android:text="歌曲名"
             android:textColor="@color/white"
             android:textSize="18sp" />
 
@@ -34,7 +33,6 @@
             android:layout_below="@+id/tv_play_song"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:text="作者"
             android:textColor="@color/white"
             android:textSize="14sp" />
 
@@ -43,7 +41,7 @@
                 android:id="@+id/civ_play_photo"
                 android:layout_width="260dip"
                 android:layout_height="260dip"
-                android:src="@mipmap/ic_launcher"
+                android:src="@mipmap/album"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/tv_play_singer"
                 android:layout_marginTop="20dp"/>
@@ -58,7 +56,6 @@
             android:layout_below="@+id/civ_play_photo"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:text="显示歌词"
             android:textColor="@color/white"
             android:textSize="18sp" />
 
@@ -71,7 +68,6 @@
             android:layout_below="@+id/tv_play_lrc"
             android:layout_marginTop="50dp"
             android:gravity="center"
-            android:text="00:00"
 
             android:textColor="@color/white" />
 
@@ -92,7 +88,6 @@
             android:layout_below="@+id/tv_play_lrc"
             android:layout_marginTop="50dp"
             android:gravity="center"
-            android:text="00:00"
             android:textColor="@color/white" />
 
         <LinearLayout

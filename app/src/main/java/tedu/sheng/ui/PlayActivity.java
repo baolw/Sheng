@@ -82,6 +82,7 @@ public class PlayActivity extends Activity implements Consts {
                     tvPlayLrc.setText("");
                     civPlayPhoto.clearAnimation();
                     app.setCurrentSong(currentSong);
+                    app.setCurrentIndex(index);
                     broadIntent.setAction(ACTION_NEXT);
                     broadIntent.putExtra(EXTRA_CURRENT_MUSIC, currentSong);
                     sendBroadcast(broadIntent);
@@ -91,6 +92,7 @@ public class PlayActivity extends Activity implements Consts {
                     tvPlayLrc.setText("");
                     civPlayPhoto.clearAnimation();
                     app.setCurrentSong(currentSong);
+                    app.setCurrentIndex(index);
                     broadIntent.setAction(ACTION_PREVIOUS);
                     broadIntent.putExtra(EXTRA_CURRENT_MUSIC, currentSong);
                     sendBroadcast(broadIntent);
@@ -108,7 +110,7 @@ public class PlayActivity extends Activity implements Consts {
             app = (MyApplication) getApplication();
             model = new MusicModel(this);
             currentSong = app.getCurrentSong();
-            index = app.getPosition();
+            index=app.getCurrentIndex();
             receiver = new InnerReceiver();
             IntentFilter filter = new IntentFilter();
             filter.addAction(ACTION_SET_AS_PLAY_STATE2);
@@ -126,20 +128,48 @@ public class PlayActivity extends Activity implements Consts {
     private void setViews() {
 
 
-        if(currentSong!=null) {
-            tvPlaySong.setText(currentSong.getTitle());
-            tvPlaySinger.setText(currentSong.getArtist_name());
+        if (app.getIsNetWork()) {
+            if (currentSong != null) {
+                tvPlaySong.setText(currentSong.getTitle());
+                tvPlaySinger.setText(currentSong.getArtist_name());
 
 
+                model.displaySingle(currentSong.getInfo().getAlbum_500_500(), civPlayPhoto, 260, 260);
 
-            model.displaySingle(currentSong.getInfo().getAlbum_500_500(), civPlayPhoto, 260, 260);
+                model.displayblur(currentSong.getInfo().getAlbum_500_500(), ivPlayBack);
 
-            model.displayblur(currentSong.getInfo().getAlbum_500_500(), ivPlayBack);
+                if (app.getIsRunning()) {
+                    ivPlayPlay.setImageResource(R.mipmap.pause);
 
+                    if (rotateAnimation == null) {
+                        rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                        rotateAnimation.setDuration(10000);
+                        rotateAnimation.setRepeatCount(Animation.INFINITE);
+                        rotateAnimation.setFillAfter(true);
+                        rotateAnimation.setInterpolator(new LinearInterpolator());
+                        civPlayPhoto.setAnimation(rotateAnimation);
+                    }
+                } else {
+
+                    ivPlayPlay.setImageResource(R.mipmap.play_big);
+                    if (rotateAnimation != null) {
+                        civPlayPhoto.clearAnimation();
+                        rotateAnimation = null;
+                    }
+                    //civPlayPhoto.clearAnimation();
+                }
+            }
+
+        } else {
+            if (app.getLocalSongs().get(app.getCurrentIndex()).getAlbumArt() == null) {
+                civPlayPhoto.setImageResource(R.mipmap.album);
+            } else {
+                Bitmap bitmap = BitmapFactory.decodeFile(app.getLocalSongs().get(app.getCurrentIndex()).getAlbumArt());
+                civPlayPhoto.setImageBitmap(bitmap);
+            }
             if (app.getIsRunning()) {
                 ivPlayPlay.setImageResource(R.mipmap.pause);
-
-                if(rotateAnimation==null) {
+                if (rotateAnimation == null) {
                     rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
                     rotateAnimation.setDuration(10000);
                     rotateAnimation.setRepeatCount(Animation.INFINITE);
@@ -149,13 +179,14 @@ public class PlayActivity extends Activity implements Consts {
                 }
             } else {
 
-                ivPlayPlay.setImageResource(R.mipmap.play_big);
-                if(rotateAnimation!=null) {
-                    civPlayPhoto.clearAnimation();
-                    rotateAnimation=null;
+                    ivPlayPlay.setImageResource(R.mipmap.play_big);
+                    if (rotateAnimation != null) {
+                        civPlayPhoto.clearAnimation();
+                        rotateAnimation = null;
+                    }
                 }
-                //civPlayPhoto.clearAnimation();
-            }
+            tvPlaySong.setText(app.getLocalSongs().get(app.getCurrentIndex()).getName());
+            tvPlaySinger.setText(app.getLocalSongs().get(app.getCurrentIndex()).getArtist());
         }
 
     }
@@ -173,36 +204,32 @@ public class PlayActivity extends Activity implements Consts {
 
             } else if (ACTION_SET_AS_PLAY_STATE2.equals(action)) {
                 setViews();
-                new Thread(){
-                    @Override
-                    public void run() {
-                        //songLrcs=model.getLrc(currentSong.getLrclink());
-                    }
-                }.start();
 
 
-            }else if(ACTION_UPDATE_PROGRESS.equals(action)){
-                int currentPosition=intent.getIntExtra(EXTRA_CURRENT_POSITION, 0);
-                int duration=intent.getIntExtra(EXTRA_DURATION,0);
+            }else if(ACTION_UPDATE_PROGRESS.equals(action)) {
+                int currentPosition = intent.getIntExtra(EXTRA_CURRENT_POSITION, 0);
+                int duration = intent.getIntExtra(EXTRA_DURATION, 0);
                 sbPlayProgress.setMax(duration);
-                if(!isTrackingTouch){
+                if (!isTrackingTouch) {
                     sbPlayProgress.setProgress(currentPosition);
                 }
-                String progressTime=CommonUtils.getFormattedTime(currentPosition);
-                String totalTime=CommonUtils.getFormattedTime(duration);
+                String progressTime = CommonUtils.getFormattedTime(currentPosition);
+                String totalTime = CommonUtils.getFormattedTime(duration);
                 tvPlayProgress.setText(progressTime);
                 tvPlayTotal.setText(totalTime);
 
-                songLrcs=app.getSongLrcs();
-                for(int i=0;i<songLrcs.size();i++){
-                    SongLrc lrc=songLrcs.get(i);
-                    String time=lrc.getTime();
-                    String content=lrc.getContent();
-                    if(time.equals(progressTime)){
-                        tvPlayLrc.setText(content);
+                if (app.getIsNetWork()) {
+                    songLrcs = app.getSongLrcs();
+                    for (int i = 0; i < songLrcs.size(); i++) {
+                        SongLrc lrc = songLrcs.get(i);
+                        String time = lrc.getTime();
+                        String content = lrc.getContent();
+                        if (time.equals(progressTime)) {
+                            tvPlayLrc.setText(content);
+                        }
                     }
-                }
 
+                }
             }
         }
 
@@ -213,49 +240,76 @@ public class PlayActivity extends Activity implements Consts {
         ivPlayPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentSong != null) {
+                if (app.getIsNetWork()) {
+                    if (currentSong != null) {
+                        broadIntent.setAction(ACTION_PLAY_OR_PAUSE);
+                        sendBroadcast(broadIntent);
+                    }
+                }else{
+
                     broadIntent.setAction(ACTION_PLAY_OR_PAUSE);
                     sendBroadcast(broadIntent);
                 }
             }
+
         });
         ivPlayNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                index=app.getCurrentIndex();
+                if(app.getIsRunning()) {
+                    new Thread() {
+                        @Override
+                        public void run() {
+
+                            index++;
+                            if (index >= app.getNetSongs().size()) {
+                                index = 0;
+                            }
 
 
-                new Thread() {
-                    @Override
-                    public void run() {
+                            currentSong = model.getSongInfo(app.getNetSongs().get(index));
 
-                        index++;
-                        if (index >= app.getNetSongs().size()) {
-                            index = 0;
+                            handler.sendEmptyMessage(0);
                         }
+                    }.start();
 
-                        currentSong = model.getSongInfo(app.getNetSongs().get(index));
-
-                        handler.sendEmptyMessage(0);
+                }/*else{
+                    index++;
+                    if (index >= app.getNetSongs().size()) {
+                        index = 0;
                     }
-                }.start();
+                    broadIntent.setAction(ACTION_NEXT);
+                    broadIntent.putExtra(EXTRA_CURRENT_POSITION, index);
+                    sendBroadcast(broadIntent);
+                }*/
 
             }
         });
         ivPlayPre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread() {
-                    @Override
-                    public void run() {
-                        index--;
-                        if (index <= 0) {
-                            index = app.getNetSongs().size() - 1;
+                if(app.getIsNetWork()) {
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            index--;
+                            if (index <= 0) {
+                                index = app.getNetSongs().size() - 1;
+                            }
+                            currentSong = model.getSongInfo(app.getNetSongs().get(index));
+                            handler.sendEmptyMessage(1);
                         }
-                        currentSong = model.getSongInfo(app.getNetSongs().get(index));
-                        handler.sendEmptyMessage(1);
+                    }.start();
+                }/*else{
+                    index--;
+                    if (index <= 0) {
+                        index = app.getNetSongs().size() - 1;
                     }
-                }.start();
-
+                    broadIntent.setAction(ACTION_NEXT);
+                    broadIntent.putExtra(EXTRA_CURRENT_POSITION, index);
+                    sendBroadcast(broadIntent);
+                }*/
             }
         });
          sbPlayProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
