@@ -20,6 +20,11 @@ android {
     }
 }
 
+android {
+    sourceSets {
+        main.jniLibs.srcDirs = ['libs']
+    }
+}
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'

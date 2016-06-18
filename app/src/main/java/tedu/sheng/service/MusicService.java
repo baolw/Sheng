@@ -55,6 +55,7 @@ public class MusicService extends Service implements Consts {
     private MusicModel model;
 
 
+    private boolean isOver;
 
     //本地音乐集合
     private List<MineSong> musics;
@@ -69,19 +70,6 @@ public class MusicService extends Service implements Consts {
 
 
         player = new MediaPlayer();
-        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                currenMusicIndex++;
-                if(currenMusicIndex>=app.getNetSongs().size()){
-                    currenMusicIndex=0;
-                }
-                currentSong=model.getSongInfo(app.getNetSongs().get(currenMusicIndex));
-                app.setCurrentIndex(currenMusicIndex);
-                app.setCurrentSong(currentSong);
-                next();
-            }
-        });
 
         receiver = new InnerReceiver();
         IntentFilter filter = new IntentFilter();
@@ -92,6 +80,18 @@ public class MusicService extends Service implements Consts {
         filter.addAction(ACTION_PREVIOUS);
         filter.addAction(ACTION_PLAY_POSITION_NET);
         registerReceiver(receiver, filter);
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+
+                Intent intent=new Intent();
+                intent.setAction(ACTION_PLAY_OVER);
+                sendBroadcast(intent);
+
+            }
+        });
+
+
 
 
     }
@@ -159,6 +159,7 @@ public class MusicService extends Service implements Consts {
 
     //下一首
     private void next() {
+
 
         pausePosition=0;
         play();

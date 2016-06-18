@@ -3,6 +3,7 @@ package tedu.sheng.util;
 public interface Consts {
 
 
+	String ACTION_PLAY_OVER="tedu.intent.action.PLAY_OVER";
 	String ACTION_PLAY_OR_PAUSE = "tedu.intent.action.PLAY_OR_PAUSE";
 	String ACTION_PREVIOUS = "tedu.intent.action.PREVIOUS";
 	String ACTION_NEXT = "tedu.intent.action.NEXT";
