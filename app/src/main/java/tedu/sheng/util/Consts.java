@@ -33,4 +33,8 @@ public interface Consts {
 	String EXTRA_DURATION="duration";
 	//多少进度开始播放
 	String EXTRA_PROGRESS = "progress";
+
+	//显示QQ头像
+	String EXTRA_QQ_IMAGE="bitmap";
+	String ACTION_QQ_IMAGE="tedu.intent.action.GET_QQ_IMAGE";
 }

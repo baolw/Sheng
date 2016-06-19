@@ -13,6 +13,16 @@
 
 
 
+        <tedu.sheng.ui.CircleImageView
+            android:id="@+id/civ_user_photo"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="12dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:visibility="gone"
+            />
+
         <TextView
             android:id="@+id/tv_Login"
             android:layout_width="30dp"

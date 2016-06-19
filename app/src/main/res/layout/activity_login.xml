@@ -16,6 +16,7 @@
         android:textSize="16sp" />
 
     <LinearLayout
+        android:id="@+id/ll_login_window"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_login_cancel"
@@ -91,6 +92,45 @@
             android:text="登录"
             android:textColor="@color/white_font" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_login_third"
+        android:layout_width="240dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/ll_login_window"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:layout_alignParentRight="true">
+
+        <TextView
+            android:id="@+id/tv_login_byqq"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:drawablePadding="4dp"
+            android:drawableLeft="@mipmap/qq"
+            android:text="QQ登录"
+            android:textColor="@color/white_font"
+            android:textSize="@dimen/normal_font_size"
+            android:gravity="center_vertical"
+           />
+
+        <TextView
+            android:id="@+id/tv_login_bywechat"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:drawablePadding="4dp"
+            android:drawableStart="@mipmap/wechat"
+            android:text="微信登录"
+            android:textColor="@color/white_font"
+            android:textSize="@dimen/normal_font_size"
+            android:gravity="center_vertical"
+            />
+
+
+    </LinearLayout>
+
 
     <RelativeLayout
         android:layout_width="match_parent"

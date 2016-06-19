@@ -2,9 +2,13 @@ package tedu.sheng.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,12 +16,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tencent.connect.UserInfo;
+import com.tencent.connect.auth.QQToken;
+import com.tencent.open.utils.Util;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import tedu.sheng.R;
+import tedu.sheng.util.Consts;
+import tedu.sheng.util.TencentUtil;
 
 /**
  * 登录界面
  */
-public class LoginActivity extends BaseActivity implements View.OnClickListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener ,Consts{
 
     // 取消登录
     private TextView tvLoginCancel;
@@ -36,6 +52,24 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     // 登录按钮
     private Button btnLogin;
 
+    private TextView tvLoginByQQ;
+
+    private Tencent mTencent;
+
+    //获取的开放接口id
+    private String openidString;
+    //QQ头像
+    private Bitmap bitmap;
+
+//qq昵称
+    private String nicknameString;
+    private Handler mHandler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+
+
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +95,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         imgClearUserName = (ImageView) findViewById(R.id.img_login_delete_username);
         imgClearUserPwd = (ImageView) findViewById(R.id.img_login_delete_userpwd);
         btnLogin = (Button) findViewById(R.id.btn_login);
+        tvLoginByQQ= (TextView) findViewById(R.id.tv_login_byqq);
     }
 
     /**
@@ -83,6 +118,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         etUserName.addTextChangedListener(NameTextChangeListener);
         // 密码输入监听
         etUserPwd.addTextChangedListener(PwdTextChangeListener);
+
+        tvLoginByQQ.setOnClickListener(this);
     }
 
     /**
@@ -166,9 +203,84 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             case R.id.btn_login:
                 Toast.makeText(LoginActivity.this, "登录", Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.tv_login_byqq:
+                mTencent = Tencent.createInstance("1105481832", this.getApplicationContext());
+                mTencent.login(LoginActivity
+                        .this,"all",new BaseUiListener());
         }
     }
 
+    private class BaseUiListener implements IUiListener{
+
+        @Override
+        public void onComplete(Object response) {
+            Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
+            try {
+                Log.e("tedu", "-------------"+response.toString());
+                openidString=((JSONObject)response).getString("openid");
+                Log.e("tedu", "-------------"+openidString);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            QQToken qqToken = mTencent.getQQToken();
+            UserInfo info = new UserInfo(getApplicationContext(), qqToken);
+            info.getUserInfo(new IUiListener() {
+                @Override
+                public void onComplete(final Object response) {
+                    // TODO Auto-generated method stub
+                    Log.e("tedu", "---------------111111");
+                    Message msg = new Message();
+                    msg.obj = response;
+                    msg.what = 0;
+                    mHandler.sendMessage(msg);
+                    Log.e("tedu", "-----111---"+response.toString());
+                    /**由于图片需要下载所以这里使用了线程，如果是想获得其他文字信息直接
+                     * 在mHandler里进行操作
+                     *
+                     */
+                    new Thread(){
+
+                        @Override
+                        public void run() {
+                            // TODO Auto-generated method stub
+                            JSONObject json = (JSONObject)response;
+                            try {
+                                bitmap = TencentUtil.getbitmap(json.getString("figureurl_qq_2"));
+                            } catch (JSONException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                            Message msg = new Message();
+                            msg.obj = bitmap;
+                            msg.what = 1;
+                            mHandler.sendMessage(msg);
+                        }
+                    }.start();
+
+            }
+
+                @Override
+                public void onError(UiError uiError) {
+Log.e("tedu","错误了");
+                }
+
+                @Override
+                public void onCancel() {
+Log.e("tedu","关闭了");
+                }
+            });
+        }
+
+        @Override
+        public void onError(UiError uiError) {
+
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+    }
     /**
      * 跳转到登录界面的静态方法
      *

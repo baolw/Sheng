@@ -21,6 +21,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.tencent.tauth.Tencent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +85,8 @@ public class MainActivity extends FragmentActivity implements Consts{
             window.setStatusBarColor(Color.TRANSPARENT);
             window.setNavigationBarColor(Color.TRANSPARENT);
         }*/
+
+
         setContentView(R.layout.activity_main);
         app= (MyApplication) getApplication();
 
@@ -172,7 +176,12 @@ public class MainActivity extends FragmentActivity implements Consts{
                     civPhoto.setVisibility(View.VISIBLE);
                     tvWelcome.setVisibility(View.GONE);
 
-                }
+                }else if(ACTION_QQ_IMAGE.equals(action)){
+                    tvLogin.setVisibility(View.GONE);
+                civPhoto.setVisibility(View.VISIBLE);
+                Bitmap bitmap=intent.getParcelableExtra(EXTRA_QQ_IMAGE);
+                civPhoto.setImageBitmap(bitmap);
+            }
             }
 
     }
