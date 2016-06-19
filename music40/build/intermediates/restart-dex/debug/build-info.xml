@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<instant-run
+    abi="armeabi-v7a,armeabi"
+    api-level="23"
+    density="xxhdpi"
+    format="7"
+    timestamp="4876485109255"
+    token="-2158274542229149254" >
+
+    <task
+        name="javac"
+        duration="1853" />
+    <task
+        name="instant-run-dex"
+        duration="0" />
+    <task
+        name="instant-run-transform"
+        duration="200" />
+    <task
+        name="verifier"
+        duration="47" />
+
+    <artifact
+        location="D:\space\Sheng\music40\build\outputs\apk\music40-debug.apk"
+        type="MAIN" />
+
+    <build timestamp="4876485109255" >
+        <artifact
+            location="D:\space\Sheng\music40\build\outputs\apk\music40-debug.apk"
+            type="MAIN" />
+    </build>
+
+</instant-run>

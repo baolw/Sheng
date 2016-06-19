@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/main_bg_icon"
+    android:padding="@dimen/normal_padding"
+    android:orientation="vertical"
+    tools:context="com.example.qll.registermusic.RegisterActivity">
+
+    <TextView
+        android:id="@+id/tv_forget_pwd_back"
+        android:layout_width="60dp"
+        android:layout_height="20dp"
+        android:drawablePadding="4dp"
+        android:drawableStart="@drawable/back_selector"
+        android:text="返回"
+        android:textColor="@color/white_font"
+        android:textSize="@dimen/normal_font_size"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="65dp"
+            android:orientation="horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp">
+
+            <EditText
+                android:id="@+id/et_forget_pwd_email"
+                style="@style/EdiTextStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="邮箱"
+                android:inputType="textEmailAddress" />
+
+            <ImageView
+                android:id="@+id/img_forget_pwd_delete_email"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:padding="5dp"
+                android:src="@drawable/delete_et_selector"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/input_line"></View>
+
+    <Button
+        android:id="@+id/btn_find_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/green_btn_shape"
+        android:padding="5dp"
+        android:text="找回密码"
+        android:textColor="@color/white_font" />
+</LinearLayout>
