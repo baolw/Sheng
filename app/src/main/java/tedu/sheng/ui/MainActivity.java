@@ -24,6 +24,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import tedu.sheng.R;
 import tedu.sheng.adapter.MyFragmentPagerAdapter;
 import tedu.sheng.app.MyApplication;
@@ -46,7 +47,6 @@ public class MainActivity extends FragmentActivity implements Consts{
     private ViewPager vpNav;
 
 
-    private ImageView ivMenu;
     private ImageView ivSearch;
     private CircleImageView civPhoto;
     private ImageView ivPlayOrPause;
@@ -67,6 +67,7 @@ public class MainActivity extends FragmentActivity implements Consts{
 
 
     private TextView tvWelcome;
+    private TextView tvLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +95,9 @@ public class MainActivity extends FragmentActivity implements Consts{
         init();
         setFragment();
         setListener();
+
+
+
 
     }
 
@@ -265,6 +269,13 @@ public class MainActivity extends FragmentActivity implements Consts{
                 startActivity(intent);
             }
         });
+        tvLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -289,7 +300,7 @@ public class MainActivity extends FragmentActivity implements Consts{
 
 
     private void init() {
-        ivMenu= (ImageView) findViewById(R.id.iv_menu);
+        tvLogin= (TextView) findViewById(R.id.tv_Login);
         ivSearch= (ImageView) findViewById(R.id.iv_search);
         civPhoto= (CircleImageView) findViewById(R.id.civ_photo);
         ivPlayOrPause= (ImageView) findViewById(R.id.iv_playorpause);

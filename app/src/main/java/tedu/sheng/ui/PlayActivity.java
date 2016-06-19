@@ -48,6 +48,7 @@ import tedu.sheng.util.HttpUtils;
 public class PlayActivity extends Activity implements Consts {
 
 
+    private TextView tvPlayBack;
     private CircleImageView civPlayPhoto;
     private ImageView ivPlayBack;
     private TextView tvPlaySong;
@@ -122,6 +123,7 @@ public class PlayActivity extends Activity implements Consts {
             filter.addAction(ACTION_SET_AS_PLAY_STATE2);
             filter.addAction(ACTION_SET_AS_PAUSE_STATE2);
             filter.addAction(ACTION_UPDATE_PROGRESS);
+        filter.addAction(ACTION_PLAY_OVER);
             registerReceiver(receiver, filter);
             init();
             setViews();
@@ -150,6 +152,7 @@ public class PlayActivity extends Activity implements Consts {
         }
 
         if (app.getIsNetWork()) {
+            currentSong=app.getCurrentSong();
             if (currentSong != null) {
                 tvPlaySong.setText(currentSong.getTitle());
                 tvPlaySinger.setText(currentSong.getArtist_name());
@@ -226,8 +229,10 @@ public class PlayActivity extends Activity implements Consts {
             String action = intent.getAction();
             //接收到暂停和开始的状态操作
             if (ACTION_SET_AS_PAUSE_STATE2.equals(action)) {
+
                 setViews();
             } else if (ACTION_SET_AS_PLAY_STATE2.equals(action)) {
+
                 setViews();
                 //更新播放过程的操作
             }else if(ACTION_UPDATE_PROGRESS.equals(action)) {
@@ -258,6 +263,34 @@ public class PlayActivity extends Activity implements Consts {
                         }
                     }
 
+                }
+            }else if(ACTION_PLAY_OVER.equals(action)){
+                index=app.getCurrentIndex();
+                if(app.getIsNetWork()) {
+                    new Thread() {
+                        @Override
+                        public void run() {
+
+                            index++;
+                            if (index >= app.getNetSongs().size()) {
+                                index = 0;
+                            }
+                            currentSong = model.getSongInfo(app.getNetSongs().get(index));
+                            app.setCurrentSong(currentSong);
+                            app.setCurrentIndex(index);
+                            handler.sendEmptyMessage(0);
+                        }
+                    }.start();
+
+                }else{
+                    index++;
+                    if (index >= app.getLocalSongs().size()) {
+                        index = 0;
+                    }
+                    app.setCurrentIndex(index);
+                    broadIntent.setAction(ACTION_NEXT);
+                    broadIntent.putExtra(EXTRA_CURRENT_POSITION, index);
+                    sendBroadcast(broadIntent);
                 }
             }
         }
@@ -369,6 +402,14 @@ public class PlayActivity extends Activity implements Consts {
                  app.setIsTrackingTouch(false);
              }
          });
+
+
+        tvPlayBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void init() {
@@ -384,6 +425,7 @@ public class PlayActivity extends Activity implements Consts {
         ivPlayPre = (ImageView) findViewById(R.id.iv_play_pre);
         ivPlayPlay = (ImageView) findViewById(R.id.iv_play_play);
         ivPlayNext = (ImageView) findViewById(R.id.iv_play_next);
+        tvPlayBack= (TextView) findViewById(R.id.tv_play_back);
 
     }
 

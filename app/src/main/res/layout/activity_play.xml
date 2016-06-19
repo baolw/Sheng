@@ -9,12 +9,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/iv_play_back"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/background" />
+            android:layout_height="match_parent">
+
+
+
+
+            <ImageView
+                android:id="@+id/iv_play_back"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/background" />
+
+            <TextView
+                android:id="@+id/tv_play_back"
+                android:layout_width="60dp"
+                android:layout_height="20dp"
+                android:drawablePadding="4dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:drawableStart="@drawable/back_selector"
+                android:text="返回"
+                android:textColor="@color/white_font"
+                android:textSize="@dimen/normal_font_size" />
+        </FrameLayout>
+
 
         <TextView
             android:id="@+id/tv_play_song"

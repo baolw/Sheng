@@ -2,9 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="tedu.sheng">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+
 
     <application
         android:name=".app.MyApplication"
@@ -15,6 +17,8 @@
         android:theme="@style/AppTheme"
         >
         <activity android:name=".ui.MainActivity"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
+            android:configChanges="orientation|keyboardHidden"
             >
             config
             <intent-filter>
@@ -26,14 +30,30 @@
         </activity>
         <activity
             android:name=".ui.PlayActivity"
-            android:launchMode="singleTask" />
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
+            android:configChanges="orientation|keyboardHidden"/>
 
-        <service android:name=".service.MusicService" />
+        <service android:name=".service.MusicService"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
+            android:configChanges="orientation|keyboardHidden"/>
 
-        <service android:name=".service.MusicDownLoadService"/>
-        <activity android:name=".ui.RegistActivity" />
+        <service android:name=".service.MusicDownLoadService"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
+            android:configChanges="orientation|keyboardHidden"/>
+
         <activity android:name=".ui.SearchActivity"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
+            android:configChanges="orientation|keyboardHidden"
             />
+        <activity android:name=".ui.ForgetPwdActivity"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
+            android:configChanges="orientation|keyboardHidden"></activity>
+        <activity android:name=".ui.LoginActivity"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
+            android:configChanges="orientation|keyboardHidden"></activity>
+        <activity android:name=".ui.RegisterActivity"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"
+            android:configChanges="orientation|keyboardHidden"></activity>
     </application>
 
 </manifest>

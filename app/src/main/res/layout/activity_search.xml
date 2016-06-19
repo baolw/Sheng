@@ -17,6 +17,7 @@
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textCursorDrawable="@null"
             />
         <Button
             android:id="@+id/bt_search"

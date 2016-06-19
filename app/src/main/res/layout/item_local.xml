@@ -10,17 +10,11 @@
         android:padding="4dp"
         >
 
-
-
-
-
         <LinearLayout
-            android:layout_width="40dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/iv_item_down"
-            android:layout_toRightOf="@+id/tv_item_num"
             android:orientation="vertical">
 
 
