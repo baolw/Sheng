@@ -7,11 +7,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -37,6 +41,7 @@ import tedu.sheng.fragment.NewsFragment;
 import tedu.sheng.model.MusicModel;
 import tedu.sheng.service.MusicService;
 import tedu.sheng.util.Consts;
+import tedu.sheng.util.StatusBarCompat;
 
 public class MainActivity extends FragmentActivity implements Consts{
 
@@ -73,7 +78,7 @@ public class MainActivity extends FragmentActivity implements Consts{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       /* getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
@@ -84,7 +89,8 @@ public class MainActivity extends FragmentActivity implements Consts{
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.TRANSPARENT);
             window.setNavigationBarColor(Color.TRANSPARENT);
-        }*/
+            StatusBarCompat.compat(this, getResources().getColor(R.color.colorPrimary));
+        }
 
 
         setContentView(R.layout.activity_main);
