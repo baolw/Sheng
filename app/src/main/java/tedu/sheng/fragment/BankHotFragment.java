@@ -24,6 +24,7 @@ import tedu.sheng.adapter.MusicAdapter;
 import tedu.sheng.app.MyApplication;
 import tedu.sheng.entity.Song;
 import tedu.sheng.model.MusicModel;
+import tedu.sheng.ui.RefreshableView;
 import tedu.sheng.url.HostURL;
 import tedu.sheng.util.Consts;
 
@@ -46,6 +47,9 @@ public class BankHotFragment extends Fragment implements Consts{
     //发送广播播放
     private Intent intent=new Intent();
     //处理ui更新，及播放歌曲
+
+    RefreshableView refreshableView;
+
     public Handler handler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -78,6 +82,28 @@ public class BankHotFragment extends Fragment implements Consts{
         v=inflater.inflate(R.layout.fragment_bank_hot,null);
         app= (MyApplication) getActivity().getApplication();
         lvHot= (ListView) v.findViewById(R.id.lv_hot);
+
+        refreshableView = (RefreshableView) v.findViewById(R.id.refreshable_view);
+        refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String path = HostURL.getHot(0, 20);
+                        songs=model.getSongs(path);
+                        handler.sendEmptyMessage(0);
+                        app.setNetSongs(songs);
+                    }
+                }).start();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                refreshableView.finishRefreshing();
+            }
+        }, 0);
 
         model=new MusicModel();
         getSongs();
