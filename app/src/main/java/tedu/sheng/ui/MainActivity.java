@@ -25,7 +25,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.tencent.tauth.Tencent;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +78,7 @@ public class MainActivity extends FragmentActivity implements Consts{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -91,6 +92,7 @@ public class MainActivity extends FragmentActivity implements Consts{
             window.setNavigationBarColor(Color.TRANSPARENT);
             StatusBarCompat.compat(this, getResources().getColor(R.color.colorPrimary));
         }
+
 
 
         setContentView(R.layout.activity_main);

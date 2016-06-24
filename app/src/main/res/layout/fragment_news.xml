@@ -3,6 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+   <Button
+       android:layout_width="match_parent"
+       android:layout_height="40dp"
+       android:id="@+id/btn_start_map"
+       android:text="开启记录"/>
 
 
 </LinearLayout>
